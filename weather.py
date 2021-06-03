@@ -1,3 +1,8 @@
+"""
+to-do
+1. нужно сделать функцию выгруски для histori
+2. нужно сделать вывод полных данных (гялнуть какие есть ключи в json)
+"""
 # I am using api openweathermap.org
 import argparse
 import requests
@@ -14,6 +19,7 @@ def open_file(filepath: str):
         return file.read()
 
 def mean(town: str, strng: str):
+    # функции для подсчета срежней велечины осадков и температуры
     pass
 
 
@@ -21,21 +27,21 @@ def variance(town: str, strng: str):
     pass
 
 
-def weather_request(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str):
-    # minutely,hourly,daily,alerts
-    str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=exclude, api_key=api_key)
+def weather_request_min(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str, part:str):
+    str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
     requests_result = requests.get(url=str_request).json()
-    # with open(file='r.json', mode='w', encoding='utf-8') as file:
-    #     json.dump(requests_result, file)
-
-    weather = requests_result['current']['weather'][0]['main']
+    weather = requests_result[exclude]['weather'][0]['main']
     print('{city}, {country}\nweather: {weather}\ntemp: {temp}\nrain, mm: {rain}'.format(
-        city=city, country=country, weather=requests_result['current']['weather'][0]['main'],
-        temp=requests_result['current'].setdefault('temp', '0'),
-        rain=requests_result['current'].setdefault('rain','0')
+        city=city, country=country, weather=requests_result[exclude]['weather'][0]['main'],
+        temp=requests_result[exclude].setdefault('temp', '0'),
+        rain=requests_result[exclude].setdefault('rain','0')
                         )
         )
 
+
+def weather_request_full(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str):
+    # тут нужно расписать аждый отдеьный признак, который доступен в json
+    pass
 
 def geocoding_api(city: str, api_key: str):
     """
@@ -46,34 +52,89 @@ def geocoding_api(city: str, api_key: str):
     return requests_result.json()[0]['lat'], requests_result.json()[0]['lon'], requests_result.json()[0]['country']
 
 
-def processing(arguments):
+def processing_weathernow(arguments):
     city = arguments.city
     api_key = arguments.apikey
-    exclude = arguments.exclude
     lat, lon, country = geocoding_api(city=city, api_key=api_key)
-    weather_request(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city)
+    weather_request = weather_request_full if arguments.full else weather_request_min
+    weather_request(lat=lat, lon=lon, country=country, exclude='current', api_key=api_key, city=city, part='minutely,hourly,daily')
+
+
+def processing_forecast(arguments):
+    city = arguments.city
+    api_key = arguments.apikey
+    lat, lon, country = geocoding_api(city=city, api_key=api_key)
+    exclude = arguments.exclude  # Сюда передают же занчения которые удлаить, те унжно конвертировать аргумент. 
+                                 # У меня exclude является тем, что останется в выводе
+    part = ','.join([i for i in ['minutely', 'hourly', 'daily', 'current'] if not (i in (
+        lambda x: x.split(',') if ',' in x else x)(exclude))])
+    weather_request = weather_request_full if arguments.full else weather_request_min
+    weather_request(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
+
+
+def processing_histori(arguments):
+    pass
+
 
 def set_parser(parser: argparse.ArgumentParser):
-    # api key
-    parser.add_argument(
-        '-k', '--apikey',
-        help='This is the access key to the web resource api',
-        type=str)
+    subparser = parser.add_subparsers(help='choose command ro run')
+    # create subparser 
+    weathernow_parser = subparser.add_parser(
+        'weathernow', help='The weather is now')
+    forecast_parser = subparser.add_parser(
+        'forecast', help='This real weather forecast and day weather forecast for a minute, hour')
+    histori_parser = subparser.add_parser(
+        'histori', help='Historical weather data. Prediction weather from my ML algorithms')
 
-    parser.add_argument(
+    # create arguments for weathernow
+    weathernow_parser.add_argument(
         '-c', '--city',
         help='City for which weather information is collected',
         type=str,
         default=DEFAULT_CITY)
+    weathernow_parser.add_argument(
+        '-f', '-full',
+        help='Flag for displaying complete data',
+        default=None,
+    )
+    weathernow_parser.add_argument(
+        '-k', '--apikey',
+        help='This is the access key to the web resource api',
+        type=str)
+    weathernow_parser.set_defaults(callback=processing_weathernow)
 
-    parser.add_argument(
+    # create arguments for forecast
+    forecast_parser.add_argument('-c', '--city',
+        help='City for which weather information is collected',
+        type=str,
+        default=DEFAULT_CITY)
+    forecast_parser.add_argument(
+        '-f', '--full',
+        help='Flag for displaying complete data',
+        default=None,)
+    forecast_parser.add_argument(
         '-e', '--exclude',
         help="By using this parameter you can exclude some parts of the weather data from the API response."
         "It should be a comma-delimited list (without spaces). Available values:current,minutely,hourly,daily,alerts.",
-        default='minutely,hourly,daily,alerts'
+        default='minutely,hourly,daily'
     )
+    forecast_parser.add_argument(
+        '-k', '--apikey',
+        help='This is the access key to the web resource api',
+        type=str)
+    forecast_parser.set_defaults(callback=processing_forecast)
 
-    parser.set_defaults(callback=processing)
+    # create arguments for histori
+    histori_parser.add_argument(
+        '-c', '--city',
+        help='City for which weather information is collected',
+        type=str,
+        default=DEFAULT_CITY)
+    histori_parser.add_argument(
+        '-k', '--apikey',
+        help='This is the access key to the web resource api',
+        type=str)
+    histori_parser.set_defaults(callback=processing_histori)
 
 
 def main():
@@ -84,7 +145,6 @@ def main():
     set_parser(parser)
     args = parser.parse_args()
     args.callback(args)  # callback for branches
-
 
 
 if __name__ == '__main__':
