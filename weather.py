@@ -2,6 +2,7 @@
 to-do
 1. нужно сделать функцию выгруски для histori
 2. нужно сделать вывод полных данных (гялнуть какие есть ключи в json)
+3. придумать как все это сделать черех классы!!!!!
 """
 # I am using api openweathermap.org
 import argparse
@@ -49,7 +50,8 @@ def forecast_request_full():
 
 
 def forecast_request_min():
-    pass
+    str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
+
 
 
 def histori_request():
@@ -69,7 +71,7 @@ def processing_weathernow(arguments):
     city = arguments.city
     api_key = arguments.apikey
     lat, lon, country = geocoding_api(city=city, api_key=api_key)
-    weather_request = weathernow_request_full if arguments.full else weathernwo_request_min
+    weather_request = weathernow_request_full if arguments.full else weathernow_request_min
     weather_request(lat=lat, lon=lon, country=country, exclude='current', api_key=api_key, city=city, part='minutely,hourly,daily')
 
 
