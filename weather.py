@@ -27,7 +27,7 @@ def variance(town: str, strng: str):
     pass
 
 
-def weather_request_min(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str, part:str):
+def weathernow_request_min(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str, part:str):
     str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
     requests_result = requests.get(url=str_request).json()
     weather = requests_result[exclude]['weather'][0]['main']
@@ -39,9 +39,22 @@ def weather_request_min(city: str, lat: str, lon: str, country: str, exclude: st
         )
 
 
-def weather_request_full(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str):
+def weathernow_request_full(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str):
     # тут нужно расписать аждый отдеьный признак, который доступен в json
     pass
+
+
+def forecast_request_full():
+    pass
+
+
+def forecast_request_min():
+    pass
+
+
+def histori_request():
+    pass
+
 
 def geocoding_api(city: str, api_key: str):
     """
@@ -56,7 +69,7 @@ def processing_weathernow(arguments):
     city = arguments.city
     api_key = arguments.apikey
     lat, lon, country = geocoding_api(city=city, api_key=api_key)
-    weather_request = weather_request_full if arguments.full else weather_request_min
+    weather_request = weathernow_request_full if arguments.full else weathernwo_request_min
     weather_request(lat=lat, lon=lon, country=country, exclude='current', api_key=api_key, city=city, part='minutely,hourly,daily')
 
 
@@ -68,7 +81,7 @@ def processing_forecast(arguments):
                                  # У меня exclude является тем, что останется в выводе
     part = ','.join([i for i in ['minutely', 'hourly', 'daily', 'current'] if not (i in (
         lambda x: x.split(',') if ',' in x else x)(exclude))])
-    weather_request = weather_request_full if arguments.full else weather_request_min
+    weather_request = forecast_request_full if arguments.full else forecast_request_min
     weather_request(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
 
 
@@ -93,9 +106,9 @@ def set_parser(parser: argparse.ArgumentParser):
         type=str,
         default=DEFAULT_CITY)
     weathernow_parser.add_argument(
-        '-f', '-full',
+        '-f', '--full',
         help='Flag for displaying complete data',
-        default=None,
+        default=False,
     )
     weathernow_parser.add_argument(
         '-k', '--apikey',
