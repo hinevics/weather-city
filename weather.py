@@ -49,10 +49,11 @@ def forecast_request_full():
     pass
 
 
-def forecast_request_min():
+def forecast_request_min(lat:str, lon:str, country:str, exclude:str, api_key:str, city:str, part:str):
     str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
-
-
+    requests_result = requests.get(url=str_request).json()
+    with open(file='result.json', mode='w', encoding='utf-8') as file:
+        json.dump(requests_result, file)
 
 def histori_request():
     pass
