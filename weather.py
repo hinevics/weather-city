@@ -15,7 +15,7 @@ import datetime
 DEFAULT_CITY = r'London'
 DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
 DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
-DEFAULT_API_KEY = r'8cd65e1b7f292a69366f2a526046a32c'
+DEFAULT_API_KEY = input('Enter the access key: ')
 
 def open_file(filepath: str):
     with open(file=filepath, mode='r', encoding='utf-8') as file:
