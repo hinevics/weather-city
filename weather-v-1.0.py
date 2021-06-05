@@ -1,8 +1,9 @@
 """
 to-do
-1. нужно сделать функцию выгруски для histori
+1. нужно сделать функцию выгруски файл для histori
 2. нужно сделать вывод полных данных (гялнуть какие есть ключи в json)
 3. придумать как все это сделать черех классы в мерии !!!!!
+    3.1 Если это будет класс, то будет реализована возможность получить доступк к каждому отдельному признаку query
 """
 # I am using api openweathermap.org
 import argparse
@@ -50,22 +51,27 @@ def weathernow_request_full(city: str, lat: str, lon: str, country: str, exclude
     pass
 
 
-def forecast_request_full():
-    pass
-
-
 def recoding_time(time: float):
     return datetime.datetime.fromtimestamp(time)
 
 
-def forecast_request_min(lat:str, lon:str, country:str, exclude:str, api_key:str, city:str, part:str):
+def forecast_request(lat:str, lon:str, country:str, exclude:str, api_key:str, city:str, part:str):
     str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
     requests_result = requests.get(url=str_request).json()
     if exclude == 'minutely':
         for minutely in requests_result['minutely']:
-            print('datetim:\t{datetime}\nprecipitation:\t{precipitation}, mm'.format(datetime=recoding_time(float(minutely['dt'])),
+            print('\tdatetim:\t{datetime}\n\tprecipitation:\t{precipitation}, mm'.format(datetime=recoding_time(float(minutely['dt'])),
             precipitation=minutely['precipitation']))
-            
+    elif exclude == 'hourly':
+        for hourly in requests_result['hourly']:
+            print('datetime:\t{datetime}'.format(datetime=recoding_time(float(hourly['datetime']))))
+            print('temperature:\t{temperature}'.format(temperature=hourly['temperature']))
+            print('feels_like:\t{feels_like}'.format(feels_like=hourly['feels_like']))
+            print('humidity:\t{humidity}'.format(humidity=hourly['humidity']))
+            print('clouds:\t{clouds}'.format(clouds=hourly['clouds']))
+            print('wind_speed:\t{wind_speed}'.format(wind_speed=hourly['wind_speed']))
+            print('probability of precipitation:{pop}'.format(pop=hourly['pop']))
+            print('Group of weather parameters:\t{weather}'.format(weather=hourly['weather']))
 
 
 def histori_request():
@@ -97,8 +103,7 @@ def processing_forecast(arguments):
                                  # У меня exclude является тем, что останется в выводе
     part = ','.join([i for i in ['minutely', 'hourly', 'daily', 'current'] if not (i in (
         lambda x: x.split(',') if ',' in x else x)(exclude))])
-    weather_request = forecast_request_full if arguments.full else forecast_request_min
-    weather_request(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
+    forecast_request(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
 
 
 def processing_histori(arguments):
@@ -138,10 +143,6 @@ def set_parser(parser: argparse.ArgumentParser):
         help='City for which weather information is collected',
         type=str,
         default=DEFAULT_CITY)
-    forecast_parser.add_argument(
-        '-f', '--full',
-        help='Flag for displaying complete data',
-        default=None,)
     forecast_parser.add_argument(
         '-e', '--exclude',
         help="By using this parameter you can exclude some parts of the weather data from the API response."
