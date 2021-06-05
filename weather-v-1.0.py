@@ -64,10 +64,15 @@ def forecast_request(lat:str, lon:str, country:str, exclude:str, api_key:str, ci
             precipitation=minutely['precipitation']))
     elif exclude == 'hourly':
         for hourly in requests_result['hourly']:
-            print('datetime:\t{datetime}'.format(datetime=recoding_time(float(hourly['datetime']))))
-            print('temperature:\t{temperature}'.format(temperature=hourly['temperature']))
-            print('feels_like:\t{feels_like}'.format(feels_like=hourly['feels_like']))
-            print('humidity:\t{humidity}'.format(humidity=hourly['humidity']))
+            print('datetime:\t{datetime}'.format(datetime=recoding_time(float(hourly['dt']))))
+            print('Temperature:\t{temperature}, Celsius'.format(temperature=hourly['temp']))
+            print(
+                'Temperature. This accounts for the human perception of weather.:\t{feels_like}, Celsius'.format(
+                    feels_like=hourly['feels_like'])
+                    )
+            print('Atmospheric pressure on the sea level:\t{pressure}, hPa'.format(pressure=hourly['pressure']))
+            print('Atmospheric temperature:\t{dew_point}'.format(dew_point=hourly['dew_point']))
+            print('Humidity:\t{humidity}, %'.format(humidity=hourly['humidity']))
             print('clouds:\t{clouds}'.format(clouds=hourly['clouds']))
             print('wind_speed:\t{wind_speed}'.format(wind_speed=hourly['wind_speed']))
             print('probability of precipitation:{pop}'.format(pop=hourly['pop']))
