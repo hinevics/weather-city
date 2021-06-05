@@ -2,18 +2,20 @@
 to-do
 1. нужно сделать функцию выгруски для histori
 2. нужно сделать вывод полных данных (гялнуть какие есть ключи в json)
-3. придумать как все это сделать черех классы!!!!!
+3. придумать как все это сделать черех классы в мерии !!!!!
 """
 # I am using api openweathermap.org
 import argparse
 import requests
 import json
 from re import sub
+import datetime
+
 
 DEFAULT_CITY = r'London'
 DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
 DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
-
+DEFAULT_API_KEY = r'8cd65e1b7f292a69366f2a526046a32c'
 
 def open_file(filepath: str):
     with open(file=filepath, mode='r', encoding='utf-8') as file:
@@ -29,9 +31,12 @@ def variance(town: str, strng: str):
 
 
 def weathernow_request_min(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str, part:str):
+    print('...start search city...')
     str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
+    print('...loading weather in {city}...'.format(city=city))
     requests_result = requests.get(url=str_request).json()
     weather = requests_result[exclude]['weather'][0]['main']
+    print('\n')
     print('{city}, {country}\nweather: {weather}\ntemp: {temp}\nrain, mm: {rain}'.format(
         city=city, country=country, weather=requests_result[exclude]['weather'][0]['main'],
         temp=requests_result[exclude].setdefault('temp', '0'),
@@ -49,11 +54,21 @@ def forecast_request_full():
     pass
 
 
+def recoding_time(time: float):
+    return datetime.datetime.fromtimestamp(time)
+
+
 def forecast_request_min(lat:str, lon:str, country:str, exclude:str, api_key:str, city:str, part:str):
     str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
     requests_result = requests.get(url=str_request).json()
-    with open(file='result.json', mode='w', encoding='utf-8') as file:
-        json.dump(requests_result, file)
+    print('{city}, {country}\n'.format(city=city, country=country))
+    for minutely in requests_result['minutely']:
+        for key in minutely.keys():
+            if key == 'dt':
+                print('datetim:\t{datetime}'.format(datetime=recoding_time(float(minutely['dt']))))
+            else:
+                print('{key}:\t{value}'.format(key=key, value=minutely[key]))
+
 
 def histori_request():
     pass
@@ -116,7 +131,8 @@ def set_parser(parser: argparse.ArgumentParser):
     weathernow_parser.add_argument(
         '-k', '--apikey',
         help='This is the access key to the web resource api',
-        type=str)
+        type=str,
+        default=DEFAULT_API_KEY)
     weathernow_parser.set_defaults(callback=processing_weathernow)
 
     # create arguments for forecast
@@ -137,7 +153,8 @@ def set_parser(parser: argparse.ArgumentParser):
     forecast_parser.add_argument(
         '-k', '--apikey',
         help='This is the access key to the web resource api',
-        type=str)
+        type=str,
+        default=DEFAULT_API_KEY)
     forecast_parser.set_defaults(callback=processing_forecast)
 
     # create arguments for histori
@@ -149,7 +166,8 @@ def set_parser(parser: argparse.ArgumentParser):
     histori_parser.add_argument(
         '-k', '--apikey',
         help='This is the access key to the web resource api',
-        type=str)
+        type=str,
+        default=DEFAULT_API_KEY)
     histori_parser.set_defaults(callback=processing_histori)
 
 
