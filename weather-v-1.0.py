@@ -64,19 +64,23 @@ def forecast_request(lat:str, lon:str, country:str, exclude:str, api_key:str, ci
             precipitation=minutely['precipitation']))
     elif exclude == 'hourly':
         for hourly in requests_result['hourly']:
-            print('datetime:\t{datetime}'.format(datetime=recoding_time(float(hourly['dt']))))
-            print('Temperature:\t{temperature}, Celsius'.format(temperature=hourly['temp']))
+            print('datetime: {datetime}'.format(datetime=recoding_time(float(hourly['dt']))))
+            print('Temperature: {temperature}, Celsius'.format(temperature=hourly['temp']))
             print(
-                'Temperature. This accounts for the human perception of weather.:\t{feels_like}, Celsius'.format(
+                'Temperature. This accounts for the human perception of weather: {feels_like}, Celsius'.format(
                     feels_like=hourly['feels_like'])
                     )
-            print('Atmospheric pressure on the sea level:\t{pressure}, hPa'.format(pressure=hourly['pressure']))
-            print('Atmospheric temperature:\t{dew_point}'.format(dew_point=hourly['dew_point']))
-            print('Humidity:\t{humidity}, %'.format(humidity=hourly['humidity']))
-            print('clouds:\t{clouds}'.format(clouds=hourly['clouds']))
-            print('wind_speed:\t{wind_speed}'.format(wind_speed=hourly['wind_speed']))
-            print('probability of precipitation:{pop}'.format(pop=hourly['pop']))
-            print('Group of weather parameters:\t{weather}'.format(weather=hourly['weather']))
+            print('Atmospheric pressure on the sea level: {pressure}, hPa'.format(pressure=hourly['pressure']))
+            print('Atmospheric temperature: {dew_point}'.format(dew_point=hourly['dew_point']))
+            print('Humidity: {humidity}, %'.format(humidity=hourly['humidity']))
+            print('clouds: {clouds}'.format(clouds=hourly['clouds']))
+            print('wind_speed: {wind_speed}'.format(wind_speed=hourly['wind_speed']))
+            print('probability of precipitation: {pop}'.format(pop=hourly['pop']))
+            print('Group of weather parameters: {weather}'.format(weather=hourly['weather']))
+            print('Rain volume for last hour: {rain}, mm'.format(rain=hourly['rain'].setdefault('1h', 0) if 'rain' in hourly else 0))
+            print('Snow volume for last hour: {snow}, mm'.format(snow=hourly['snow'].setdefault('1h', 0) if 'snow' in hourly else 0))
+            print('Group of weather parameters: {main}'.format(main=hourly['weather']['main']))
+            print('------------------------------------------------------------------------------------------------------------')
 
 
 def histori_request():
