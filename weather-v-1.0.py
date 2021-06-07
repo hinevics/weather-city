@@ -1,5 +1,6 @@
 """
 to-do
+1. добавить console output
 1. нужно сделать функцию выгруски файл для histori
 2. нужно сделать вывод полных данных (гялнуть какие есть ключи в json)
 3. придумать как все это сделать черех классы в мерии !!!!!
@@ -60,11 +61,11 @@ def forecast_request(lat:str, lon:str, country:str, exclude:str, api_key:str, ci
     requests_result = requests.get(url=str_request).json()
     if exclude == 'minutely':
         for minutely in requests_result['minutely']:
-            print('\tdatetim:\t{datetime}\n\tprecipitation:\t{precipitation}, mm'.format(datetime=recoding_time(float(minutely['dt'])),
+            print('\tdatetim: {dt}\nprecipitation:{precipitation}, mm'.format(dt=recoding_time(float(minutely['dt'])),
             precipitation=minutely['precipitation']))
     elif exclude == 'hourly':
         for hourly in requests_result['hourly']:
-            print('datetime: {datetime}'.format(datetime=recoding_time(float(hourly['dt']))))
+            print('datetime: {dt}'.format(dt=recoding_time(float(hourly['dt']))))
             print('Temperature: {temperature}, Celsius'.format(temperature=hourly['temp']))
             print(
                 'Temperature. This accounts for the human perception of weather: {feels_like}, Celsius'.format(
@@ -80,6 +81,32 @@ def forecast_request(lat:str, lon:str, country:str, exclude:str, api_key:str, ci
             print('Rain volume for last hour: {rain}, mm'.format(rain=hourly['rain'].setdefault('1h', 0) if 'rain' in hourly else 0))
             print('Snow volume for last hour: {snow}, mm'.format(snow=hourly['snow'].setdefault('1h', 0) if 'snow' in hourly else 0))
             print('Group of weather parameters: {main}'.format(main=hourly['weather']['main']))
+            print('------------------------------------------------------------------------------------------------------------')
+    elif exclude == 'daily':
+        for daily in requests_result['daily']:
+            print('Time of the forecasted data: {dt}'.format(dt=recoding_time(daily['dt'])))
+            print('Sunrise time: {sunrise}'.format(sunrise=recoding_time(daily['sunrise'])))
+            print('The time of when the moon rises for this day: {moonrise}'.format(moonrise=recoding_time(daily['moonrise'])))
+            print('The time of when the moon sets for this day: {moonset}'.format(moonset=recoding_time(daily['moonset']) if daily['moonset'] != 0 else 0))
+            print('moon_phase: {moon_phase}'.format(moon_phase=daily['moon_phase']))
+            print('Temperature:')
+            print('\tMorning temperature: {morn}'.format(morn=daily['temp']['morn']))
+            print('\tDay temperature: {day}'.format(day=daily['temp']['day']))
+            print('\t Evening temperature: {eve}'.format(eve=daily['temp']['eve']))
+            print('\tNight temperature: {night}'.format(night=daily['temp']['night']))
+            print('\tMin daily temperature: {min}'.format(min=daily['temp']['min']))
+            print('\tMax daily temperature: {max}'.format(max=daily['temp']['max']))
+            print('Atmospheric pressure on the sea level: {pressure}, hPa'.format(pressure=daily['pressure']))
+            print('Humidity: {humidity}, %'.format(humidity=daily['humidity']))
+            print('Wind speed: {wind_speed}'.format(wind_speed=daily['wind_speed']))
+            print('Wind gust: {wind_gust}'.format(wind_gust=daily['wind_gust'] if 'wind_gust' in daily else 0))
+            print('Wind direction, degrees: {wind_deg}'.format(wind_deg=daily['wind_deg']))
+            print('Cloudiness: {clouds} %'.format(clouds=daily['clouds']))
+            print('Probability of precipitation: {pop}'.format(pop=daily['pop']))
+            print('Precipitation volume: {rain} mm'.format(rain=daily['rain'] if 'rain' in daily else 0))
+            print('Snow volume: {snow} mm'.format(snow=daily['snow'] if 'snow' in daily else 0))
+            print('Weather:')
+            print('\tGroup of weather parameters: {main}'.format(main=daily['weather'][0]['main']))
             print('------------------------------------------------------------------------------------------------------------')
 
 
@@ -121,6 +148,9 @@ def processing_histori(arguments):
 
 def set_parser(parser: argparse.ArgumentParser):
     subparser = parser.add_subparsers(help='choose command ro run')
+    
+    # CLI parser
+    
     # create subparser 
     weathernow_parser = subparser.add_parser(
         'weathernow', help='The weather is now')
