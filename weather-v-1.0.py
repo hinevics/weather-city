@@ -14,6 +14,7 @@ from re import sub
 import datetime
 
 
+
 DEFAULT_CITY = r'London'
 DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
 DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
@@ -217,7 +218,6 @@ def main():
     set_parser(parser)
     args = parser.parse_args()
     args.callback(args)  # callback for branches
-
 
 if __name__ == '__main__':
     main()
