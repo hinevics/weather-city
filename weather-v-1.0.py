@@ -33,7 +33,19 @@ def variance(town: str, strng: str):
     pass
 
 
-def weathernow_request_min(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str, part:str):
+def geocoding_api(city: str, api_key: str):
+    """
+    return lat, lon, country
+    """
+    str_request = DEFAULT_API_CITY.format(city_name=city, api_key=api_key)
+    requests_result = requests.get(url=str_request)
+    return requests_result.json()[0]['lat'], requests_result.json()[0]['lon'], requests_result.json()[0]['country']
+
+
+def recoding_time(time: float):
+    return datetime.datetime.fromtimestamp(time)
+
+def weathernow_request(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str, part:str):
     print('...start search city...')
     str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
     print('...loading weather in {city}...'.format(city=city))
@@ -46,15 +58,6 @@ def weathernow_request_min(city: str, lat: str, lon: str, country: str, exclude:
         rain=requests_result[exclude].setdefault('rain','0')
                         )
         )
-
-
-def weathernow_request_full(city: str, lat: str, lon: str, country: str, exclude: str, api_key: str):
-    # тут нужно расписать аждый отдеьный признак, который доступен в json
-    pass
-
-
-def recoding_time(time: float):
-    return datetime.datetime.fromtimestamp(time)
 
 
 def forecast_request(lat:str, lon:str, country:str, exclude:str, api_key:str, city:str, part:str):
@@ -115,24 +118,7 @@ def histori_request():
     pass
 
 
-def geocoding_api(city: str, api_key: str):
-    """
-    return lat, lon, country
-    """
-    str_request = DEFAULT_API_CITY.format(city_name=city, api_key=api_key)
-    requests_result = requests.get(url=str_request)
-    return requests_result.json()[0]['lat'], requests_result.json()[0]['lon'], requests_result.json()[0]['country']
-
-
-def processing_weathernow(arguments):
-    city = arguments.city
-    api_key = arguments.apikey
-    lat, lon, country = geocoding_api(city=city, api_key=api_key)
-    weather_request = weathernow_request_full if arguments.full else weathernow_request_min
-    weather_request(lat=lat, lon=lon, country=country, exclude='current', api_key=api_key, city=city, part='minutely,hourly,daily')
-
-
-def processing_forecast(arguments):
+def processing_output(arguments):
     city = arguments.city
     api_key = arguments.apikey
     lat, lon, country = geocoding_api(city=city, api_key=api_key)
@@ -140,74 +126,41 @@ def processing_forecast(arguments):
                                  # У меня exclude является тем, что останется в выводе
     part = ','.join([i for i in ['minutely', 'hourly', 'daily', 'current'] if not (i in (
         lambda x: x.split(',') if ',' in x else x)(exclude))])
-    forecast_request(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
-
-
-def processing_histori(arguments):
-    pass
+    if exclude == 'current':
+        weathernow_request(city=city, lat=lat, lon=lon, country=country, exclude=exclude, part=part, api_key=api_key)
+    elif exclude == 'minutely':
+        forecast_request(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
 
 
 def set_parser(parser: argparse.ArgumentParser):
-    subparser = parser.add_subparsers(help='choose command ro run')
+    subparser = parser.add_subparsers(help='choose command to run')
     
     # CLI parser
-    
-    # create subparser 
-    weathernow_parser = subparser.add_parser(
-        'weathernow', help='The weather is now')
-    forecast_parser = subparser.add_parser(
-        'forecast', help='This real weather forecast and day weather forecast for a minute, hour')
-    histori_parser = subparser.add_parser(
-        'histori', help='Historical weather data. Prediction weather from my ML algorithms')
+    output = subparser.add_parser('output', help='Outputting information to the console')
+# create subparser
+    # субпарсеры использовать для режимов работы: 1 вывод информации в консоль, 2 выгрузка данных в приложение 3. выгрузка данных в файл
+    # Сами аргументы можно сгрупировать 
+
+
 
     # create arguments for weathernow
-    weathernow_parser.add_argument(
+    output.add_argument(
         '-c', '--city',
         help='City for which weather information is collected',
         type=str,
         default=DEFAULT_CITY)
-    weathernow_parser.add_argument(
-        '-f', '--full',
-        help='Flag for displaying complete data',
-        default=False,
-    )
-    weathernow_parser.add_argument(
-        '-k', '--apikey',
-        help='This is the access key to the web resource api',
-        type=str,
-        default=DEFAULT_API_KEY)
-    weathernow_parser.set_defaults(callback=processing_weathernow)
-
-    # create arguments for forecast
-    forecast_parser.add_argument('-c', '--city',
-        help='City for which weather information is collected',
-        type=str,
-        default=DEFAULT_CITY)
-    forecast_parser.add_argument(
+    output.add_argument(
         '-e', '--exclude',
         help="By using this parameter you can exclude some parts of the weather data from the API response."
         "It should be a comma-delimited list (without spaces). Available values:current,minutely,hourly,daily,alerts.",
         default='minutely,hourly,daily'
     )
-    forecast_parser.add_argument(
+    output.add_argument(
         '-k', '--apikey',
         help='This is the access key to the web resource api',
         type=str,
         default=DEFAULT_API_KEY)
-    forecast_parser.set_defaults(callback=processing_forecast)
-
-    # create arguments for histori
-    histori_parser.add_argument(
-        '-c', '--city',
-        help='City for which weather information is collected',
-        type=str,
-        default=DEFAULT_CITY)
-    histori_parser.add_argument(
-        '-k', '--apikey',
-        help='This is the access key to the web resource api',
-        type=str,
-        default=DEFAULT_API_KEY)
-    histori_parser.set_defaults(callback=processing_histori)
+    output.set_defaults(callback=processing_output)
 
 
 def main():
