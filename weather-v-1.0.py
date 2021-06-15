@@ -12,13 +12,13 @@ import requests
 import json
 from re import sub
 import datetime
-
+  
 
 DEFAULT_CITY = r'London'
 DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
 DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
 DEFAULT_API_KEY = input('Enter the access key: ')
-
+DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
 
 class WeatherJSON:
     pass
@@ -56,32 +56,45 @@ def weather_api(lat: str, lon: str, part: str, api_key: str):
     return requests.get(url=str_request).json()
 
 
+def history_api(lat: str, lon: str, time: str, api_key: str):
+    str_request = DEFAULT_API_WEATHER_HISTORY.format(lat=lat, lon=lon, api_key=api_key, time=time)
+    return requests.get(url=str_request).json()
+
+
 def recoding_time(time: float):
     return datetime.datetime.fromtimestamp(time)
 
 
+def encode_time(city_name, api_key):
+    # posix = datetime.datetime.fromisoformat(time)
+    # print(posix)
+    # res = datetime.datetime.fromtimestamp(posix)
+    # print(res)
+    # # return datetime.datetime.utcoffset(posix)
+    str_request = DEFAULT_API_CITY.format(city_name=city_name, api_key=api_key)
+    requests_result = requests.get(url=str_request)
+    print(requests_result)
+    
 def currentoutput(city: str, country: str, query_result: dict):
     weather = query_result['current']['weather'][0]['main']
     print('{city}, {country}\nweather: {weather}\ntemp: {temp}\nrain, mm: {rain}'.format(
-        city=city, country=country, weather=requests_result[exclude]['weather'][0]['main'],
-        temp=requests_result[exclude].setdefault('temp', '0'),
-        rain=requests_result[exclude].setdefault('rain','0')
+        city=city, country=country, weather=query_result['current']['weather'][0]['main'],
+        temp=query_result['current'].setdefault('temp', '0'),
+        rain=query_result['current'].setdefault('rain','0')
                         )
         )
 
 
-def minutelyoutput(lat:str, lon:str, country:str, exclude:str, api_key:str, city:str, part:str):
-    str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
-    requests_result = requests.get(url=str_request).json()
-    for minutely in requests_result['minutely']:
+def minutelyoutput(query_result: dict, city: str, country: str):
+    print('\n{city}, {country}\n'.format(city=city, country=country))
+    for minutely in query_result['minutely']:
         print('\tdatetim: {dt}\nprecipitation:{precipitation}, mm'.format(dt=recoding_time(float(minutely['dt'])),
         precipitation=minutely['precipitation']))
 
 
-def hourlyoutput(lat:str, lon:str, country:str, exclude:str, api_key:str, city:str, part:str):
-    str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
-    requests_result = requests.get(url=str_request).json()
-    for hourly in requests_result['hourly']:
+def hourlyoutput(query_result: dict, city: str, country: str):
+    print('\n{city}, {country}\n'.format(city=city, country=country))
+    for hourly in query_result['hourly']:
         print('datetime: {dt}'.format(dt=recoding_time(float(hourly['dt']))))
         print('Temperature: {temperature}, Celsius'.format(temperature=hourly['temp']))
         print(
@@ -101,11 +114,9 @@ def hourlyoutput(lat:str, lon:str, country:str, exclude:str, api_key:str, city:s
         print('------------------------------------------------------------------------------------------------------------')
 
 
-def dailyoutput(lat:str, lon:str, country:str, exclude:str, api_key:str, city:str, part:str):
-    str_request = DEFAULT_API_WEATHER.format(lat=lat, lon=lon, part=part, api_key=api_key)
-    requests_result = requests.get(url=str_request).json()
-    for daily in requests_result['daily']:
-        print('\n{city}, {country}\n'.format(city=city, country=country))
+def dailyoutput(query_result: dict, city: str, country: str):
+    print('\n{city}, {country}\n'.format(city=city, country=country))
+    for daily in query_result['daily']:
         print('Time of the forecasted data: {dt}'.format(dt=recoding_time(daily['dt'])))
         print('Sunrise time: {sunrise}'.format(sunrise=recoding_time(daily['sunrise'])))
         print('The time of when the moon rises for this day: {moonrise}'.format(moonrise=recoding_time(daily['moonrise'])))
@@ -136,39 +147,42 @@ def historioutput():
     pass
 
 
-def processing_output(arguments):
+def processing_current(arguments):
     city = arguments.city
     api_key = arguments.apikey
+    
     lat, lon, country = geocoding_api(city=city, api_key=api_key)
+    
+    part = ','.join([i for i in ['minutely', 'hourly', 'daily', 'current'] if not (i in (
+            lambda x: x.split(',') if ',' in x else x)('current'))])
+    
+    query_result = weather_api(lat=lat, lon=lon, part=part, api_key=api_key)
+    currentoutput(city=city, country=country, query_result=query_result)
+
+
+def processing_forecast(arguments):
+    city = arguments.city
+    api_key = arguments.apikey
     parameter = arguments.parameter
+
+    lat, lon, country = geocoding_api(city=city, api_key=api_key)
     part = ','.join([i for i in ['minutely', 'hourly', 'daily', 'current'] if not (i in (
         lambda x: x.split(',') if ',' in x else x)(parameter))])
     
-    query_result = weather_api(lat=lat, lon=lon, part=part, api_key=api_key)
-    
-    if parameter == 'current':
-        currentoutput(city=city, country=country, query_result=query_result)
-    elif parameter == 'minutely':
-        minutelyoutput(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
+    query_result = weather_api(lat=lat, lon=lon, part=part, api_key=api_key)  # return dict from api query
+    if parameter == 'minutely':
+        minutelyoutput(query_result=query_result, city=city, country=country)
     elif parameter == 'hourly':
-        hourlyoutput(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
+        hourlyoutput(query_result=query_result, city=city, country=country)
     elif parameter == 'daily':
-        dailyoutput(lat=lat, lon=lon, country=country, exclude=exclude, api_key=api_key, city=city, part=part)
-    elif parameter == 'history':
-        pass
+        dailyoutput(query_result=query_result, city=city, country=country)
     else:
         raise ParameterErrors
 
 
-# def processing_current(arguments):
-#     city = arguments.city
-#     api_key = arguments.apikey
-#     lat, lon, country = geocoding_api(city=city, api_key=api_key)
-#     part = ','.join([i for i in ['minutely', 'hourly', 'daily', 'current'] if not (i in (
-#             lambda x: x.split(',') if ',' in x else x)('current'))])
-#     if arguments.output:
-#         currentoutput(city=city, lat=lat, lon=lon, country=country, exclude='current')
-
+def processing_history(arguments):
+    time = arguments.time
+    encode_time(city_name=DEFAULT_CITY, api_key=DEFAULT_API_KEY)
 
 
 def set_parser(parser: argparse.ArgumentParser):
@@ -182,14 +196,43 @@ def set_parser(parser: argparse.ArgumentParser):
     output = subparser.add_parser('output', help='outputting information to the console')
     save = subparser.add_parser('save', help='save to file')
     app = subparser.add_parser('app', help='application launch')
-    # parameter 
+
+    # output
+    suboutput = output.add_subparsers(help='!!!!')
     
-    # create arguments for output
-    output.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
-                        + 'Available values: current, minutely, hourly, daily', default='current')
-    output.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
-    output.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
-    output.set_defaults(callback=processing_output)
+    # suboutput
+    current = suboutput.add_parser('current', help='Current weather')
+    forecast = suboutput.add_parser(
+        'forecast',
+        help='Forecast weather: minute forecast for 1 hour, hourly forecast for 48 hours, daily forecast for 7 days')
+    history = suboutput.add_parser('history', help='Historical weather data for the previous 5 days')
+    
+    # current
+    current.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    current.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    current.set_defaults(callback=processing_current)
+    
+    # forecast
+    forecast.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
+                        + 'Available values: minutely, hourly, daily', default='minutely')
+    forecast.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    forecast.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    forecast.set_defaults(callback=processing_forecast)
+    
+    # history
+    history.add_argument(
+        '-t',
+        '--time',
+        help='Date from the previous five days (Unix time, UTC time zone), e.g. dt=2021-06-10',
+        default='...')
+    history.set_defaults(callback=processing_history)
+    # output.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
+                        # + 'Available values: current, minutely, hourly, daily', default='current')
+    # output.add_argument('-h', '--history', help='Data for the past 5 days')
+    # output.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    # output.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+
+    # output.set_defaults(callback=processing_output)
 
     # current.add_argument('-o', '--output', help='outputting information to the console', action='store_true', default=False)
     # current.add_argument('-s', '--save', help='Save to file', action='store_true')
