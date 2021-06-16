@@ -65,16 +65,10 @@ def recoding_time(time: float):
     return datetime.datetime.fromtimestamp(time)
 
 
-def encode_time(city_name, api_key):
-    # posix = datetime.datetime.fromisoformat(time)
-    # print(posix)
-    # res = datetime.datetime.fromtimestamp(posix)
-    # print(res)
-    # # return datetime.datetime.utcoffset(posix)
-    str_request = DEFAULT_API_CITY.format(city_name=city_name, api_key=api_key)
-    requests_result = requests.get(url=str_request)
-    print(requests_result)
-    
+def encode_time(time: str):
+   return int(datetime.datetime.strptime(time, r'%Y-%m-%d').timestamp())
+
+
 def currentoutput(city: str, country: str, query_result: dict):
     weather = query_result['current']['weather'][0]['main']
     print('{city}, {country}\nweather: {weather}\ntemp: {temp}\nrain, mm: {rain}'.format(
@@ -143,8 +137,8 @@ def dailyoutput(query_result: dict, city: str, country: str):
         print('------------------------------------------------------------------------------------------------------------')
 
 
-def historioutput():
-    pass
+def historioutput(query_result: dict):
+    print(query_result)
 
 
 def processing_current(arguments):
@@ -181,9 +175,19 @@ def processing_forecast(arguments):
 
 
 def processing_history(arguments):
+    # time
     time = arguments.time
-    encode_time(city_name=DEFAULT_CITY, api_key=DEFAULT_API_KEY)
+    api_key = arguments.apikey
+    city = arguments.city
+    
+    # geocoding
+    lat, lon, country = geocoding_api(city=city, api_key=api_key)
 
+    # unix
+    unix_time = encode_time(time=time)
+    query_result = history_api(lat=lat, lon=lon, time=unix_time, api_key=api_key)
+    historioutput(query_result)
+    
 
 def set_parser(parser: argparse.ArgumentParser):
     subparser = parser.add_subparsers(help="The One Call API provides the following weather data for any geographical coordinates:" +
@@ -225,6 +229,8 @@ def set_parser(parser: argparse.ArgumentParser):
         '--time',
         help='Date from the previous five days (Unix time, UTC time zone), e.g. dt=2021-06-10',
         default='...')
+    history.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    history.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
     history.set_defaults(callback=processing_history)
     # output.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
                         # + 'Available values: current, minutely, hourly, daily', default='current')
