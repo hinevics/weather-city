@@ -18,7 +18,7 @@ DEFAULT_CITY = r'London'
 DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
 DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
 DEFAULT_API_KEY = input('Enter the access key: ')
-DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
+DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&lang=ru&dt={time}&appid={api_key}'
 
 class WeatherJSON:
     pass
@@ -137,8 +137,68 @@ def dailyoutput(query_result: dict, city: str, country: str):
         print('------------------------------------------------------------------------------------------------------------')
 
 
-def historioutput(query_result: dict):
-    print(query_result)
+def historioutput(query_result: dict, city:str, country:str):
+    print('\n{city}, {country}\n'.format(city=city, country=country))
+    print('---Weather at the requested time---')
+    print('Requested time: {dt}'.format(dt=recoding_time(query_result['current']['dt'])))
+    print('Sunrise time: {sunrise}'.format(sunrise=recoding_time(query_result['current']['sunrise'])))
+    print('Sunset time: {sunset}'.format(sunset=recoding_time(query_result['current']['sunset'])))
+    print('Temperature: {temp}'.format(temp=query_result['current']['temp']))
+    print('Temperature.'+
+          '\nThis accounts for the human perception of weather.: {feels_like}'.format(
+              feels_like=query_result['current']['feels_like']))
+    print('Atmospheric pressure on the sea level: {pressure}, hPa'.format(pressure=query_result['current']['pressure']))
+    print('Humidity: {humidity}, %'.format(humidity=query_result['current']['humidity']))
+    print('Atmospheric temperature'+
+          'below which water droplets begin to condense and dew can form. : {dew_point}, %'.format(
+              dew_point=query_result['current']['dew_point']))
+    print('Cloudiness: {clouds}, %'.format(clouds=query_result['current']['clouds']))
+    print('Midday UV index: {uvi}, %'.format(uvi=query_result['current']['uvi']))
+    print('Average visibility: {visibility}, metres'.format(visibility=query_result['current']['visibility']))
+    print('Wind speed: {wind_speed}, metres'.format(wind_speed=query_result['current']['wind_speed']))
+    print('Wind gust: {wind_gust}, metre/sec'.format(wind_gust=query_result['current']['wind_gust']
+                                                      if 'wind_gust' in query_result['current'] else 0))
+    print('Wind direction: {wind_deg}, degrees: '.format(wind_deg=query_result['current']['wind_deg']))
+    print('Precipitation volume: {rain}, mm: '.format(rain=query_result['current']['rain']
+                                                    if 'rain' in query_result['current'] else 0))
+    print('Snow volume: {snow}, mm: '.format(snow=query_result['current']['snow']
+                                                    if 'snow' in query_result['current'] else 0))
+    print('\nWeather')
+    for weather in query_result['current']['weather']:
+        print('Group of weather parameters: {main}'.format(main=weather['main']))
+        print('Weather condition within the group: {description}'.format(description=weather['description']))
+    print('\n')
+    print('---Data block contains hourly historical data starting at 00:00 on the requested day and continues until 23:59 on the same day (UTC time)---')
+    print('\n')
+    for hourly in query_result['hourly']:
+        print('{dt}'.format(dt=recoding_time(hourly['dt'])))
+        print()
+        print('Temperature: {temp}'.format(temp=hourly['temp']))
+        print('Temperature.'+
+            '\nThis accounts for the human perception of weather.: {feels_like}'.format(
+                feels_like=hourly['feels_like']))
+        print('Atmospheric pressure on the sea level: {pressure}, hPa'.format(pressure=hourly['pressure']))
+        print('Humidity: {humidity}, %'.format(humidity=hourly['humidity']))
+        print('Atmospheric temperature'+
+            'below which water droplets begin to condense and dew can form. : {dew_point}, %'.format(
+                dew_point=hourly['dew_point']))
+        print('Cloudiness: {clouds}, %'.format(clouds=hourly['clouds']))
+        print('Average visibility: {visibility}, metres'.format(visibility=hourly['visibility']))
+        print('Wind speed: {wind_speed}, metres'.format(wind_speed=hourly['wind_speed']))
+        print('Wind gust: {wind_gust}, metre/sec'.format(wind_gust=hourly['wind_gust']
+                                                        if 'wind_gust' in hourly else 0))
+        print('Wind direction: {wind_deg}, degrees: '.format(wind_deg=hourly['wind_deg']))
+        print('Precipitation volume: {rain}, mm: '.format(rain=hourly['rain']
+                                                        if 'rain' in hourly else 0))
+        print('Snow volume: {snow}, mm: '.format(snow=hourly['snow']
+                                                        if 'snow' in hourly else 0))
+        print('---Weather---')
+        for weather in hourly['weather']:
+            print('Group of weather parameters: {main}'.format(main=weather['main']))
+            print('Weather condition within the group: {description}'.format(description=weather['description']))
+        print('------------------------------------------------------------------------------------------------------------')
+
+
 
 
 def processing_current(arguments):
@@ -186,7 +246,7 @@ def processing_history(arguments):
     # unix
     unix_time = encode_time(time=time)
     query_result = history_api(lat=lat, lon=lon, time=unix_time, api_key=api_key)
-    historioutput(query_result)
+    historioutput(query_result, city=city, country=country)
     
 
 def set_parser(parser: argparse.ArgumentParser):
