@@ -12,8 +12,8 @@ import requests
 import json
 from re import sub
 import datetime
-  
 
+DEFAULT_PATH_SAVE_FILE = r'../{name_doc}.{form}'
 DEFAULT_CITY = r'London'
 DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
 DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
@@ -201,7 +201,7 @@ def historioutput(query_result: dict, city:str, country:str):
 
 
 
-def processing_current(arguments):
+def processing_current_output(arguments):
     city = arguments.city
     api_key = arguments.apikey
     
@@ -214,7 +214,7 @@ def processing_current(arguments):
     currentoutput(city=city, country=country, query_result=query_result)
 
 
-def processing_forecast(arguments):
+def processing_forecast_output(arguments):
     city = arguments.city
     api_key = arguments.apikey
     parameter = arguments.parameter
@@ -234,7 +234,7 @@ def processing_forecast(arguments):
         raise ParameterErrors
 
 
-def processing_history(arguments):
+def processing_history_output(arguments):
     # time
     time = arguments.time
     api_key = arguments.apikey
@@ -247,7 +247,27 @@ def processing_history(arguments):
     unix_time = encode_time(time=time)
     query_result = history_api(lat=lat, lon=lon, time=unix_time, api_key=api_key)
     historioutput(query_result, city=city, country=country)
+
+
+def processing_save_current(arguments):
+    pass
+
+
+def processing_forecast_save(arguments):
+    pass
+
+
+def processing_history_save(arguments):
+    # time
+    time = arguments.time
+    api_key = arguments.apikey
+    city = arguments.city
     
+    # geocoding
+    lat, lon, country = geocoding_api(city=city, api_key=api_key)
+    # unix
+    unix_time = encode_time(time=time)
+    query_result = history_api(lat=lat, lon=lon, time=unix_time, api_key=api_key)
 
 def set_parser(parser: argparse.ArgumentParser):
     subparser = parser.add_subparsers(help="The One Call API provides the following weather data for any geographical coordinates:" +
@@ -262,62 +282,74 @@ def set_parser(parser: argparse.ArgumentParser):
     app = subparser.add_parser('app', help='application launch')
 
     # output
-    suboutput = output.add_subparsers(help='!!!!')
+    suboutput = output.add_subparsers(help='output in CLI')
     
     # suboutput
-    current = suboutput.add_parser('current', help='Current weather')
-    forecast = suboutput.add_parser(
+    output_current = suboutput.add_parser('current', help='Current weather')
+    output_forecast = suboutput.add_parser(
         'forecast',
         help='Forecast weather: minute forecast for 1 hour, hourly forecast for 48 hours, daily forecast for 7 days')
-    history = suboutput.add_parser('history', help='Historical weather data for the previous 5 days')
+    output_history = suboutput.add_parser('history', help='Historical weather data for the previous 5 days')
     
     # current
-    current.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
-    current.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
-    current.set_defaults(callback=processing_current)
+    output_current.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    output_current.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    output_current.set_defaults(callback=processing_current_output)
     
     # forecast
-    forecast.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
+    output_forecast.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
                         + 'Available values: minutely, hourly, daily', default='minutely')
-    forecast.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
-    forecast.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
-    forecast.set_defaults(callback=processing_forecast)
+    output_forecast.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    output_forecast.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    output_forecast.set_defaults(callback=processing_forecast_output)
     
     # history
-    history.add_argument(
+    output_history.add_argument(
         '-t',
         '--time',
         help='Date from the previous five days (Unix time, UTC time zone), e.g. dt=2021-06-10',
         default='...')
-    history.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
-    history.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
-    history.set_defaults(callback=processing_history)
-    # output.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
-                        # + 'Available values: current, minutely, hourly, daily', default='current')
-    # output.add_argument('-h', '--history', help='Data for the past 5 days')
-    # output.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
-    # output.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    output_history.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    output_history.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    output_history.set_defaults(callback=processing_history_output)
 
-    # output.set_defaults(callback=processing_output)
+    # save
+    subsave = save.add_subparsers(help='Save in doc')
 
-    # current.add_argument('-o', '--output', help='outputting information to the console', action='store_true', default=False)
-    # current.add_argument('-s', '--save', help='Save to file', action='store_true')
-    # current.add_argument('-a', '--app', help='Application launch', action='store_true')
-    # current.add_argument(
-    #     '-c', '--city',
-    #     help='City for which weather information is collected',
-    #     type=str,
-    #     default=DEFAULT_CITY
-    #     )
-    # current.set_defaults(callback=processing_current)
-# current.add_argument(
-    #     '-e', '--exclude',
-    #     help="By using this parameter you can exclude some parts of the weather data from the API response."
-    #     "It should be a comma-delimited list (without spaces). Available values:current,minutely,hourly,daily,alerts.",
-    #     default='current'
-    # )
+    # subsave
+    save_current = subsave.add_parser('current', help='Save the current weather')
+    save_forecast = subsave.add_parser(
+        'forecast',
+        help='Saving Weather Forecast: 1 hour forecast 1 hour, 48 hour hourly forecast, 7 days daily forecast')
+    save_history = subsave.add_parser('history', help='Storing historical weather data for the previous 5 days')
     
+    # current
+    save_current.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    save_current.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    save_current.add_argument('-path', '--path-to-file', help='File save path', default=DEFAULT_PATH_SAVE_FILE)
+    save_current.set_defaults(callback=processing_save_current)
 
+    #forecast
+    save_forecast.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
+                        + 'Available values: minutely, hourly, daily', default='minutely')
+    save_forecast.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    save_forecast.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    save_forecast.add_argument('-path', '--path-to-file', help='File save path', default=DEFAULT_PATH_SAVE_FILE)
+    save_forecast.set_defaults(callback=processing_forecast_save)
+    
+    #history
+    save_history.add_argument(
+        '-t',
+        '--time',
+        help='Date from the previous five days (Unix time, UTC time zone), e.g. dt=2021-06-10',
+        default='...')
+    save_history.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
+    save_history.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
+    save_history.add_argument('-path', '--path-to-file', help='File save path', default=DEFAULT_PATH_SAVE_FILE)
+    save_history.set_defaults(callback=processing_history_save)
+
+# добавть форматы сохарения в json или csv 
+# не нужно много парсеров для сохра, тип данный запрашиваем через два флага и параметры
 def main():
     parser = argparse.ArgumentParser(
         description='This is a CLI application for getting weather data through the api of the climate data storage service',
