@@ -10,15 +10,38 @@ to-do
 import argparse
 import requests
 import json
+import csv
 from re import sub
 import datetime
 
-DEFAULT_PATH_SAVE_FILE = r'../{name_doc}.{form}'
+DEFAULT_PATH_SAVE_FILE = r'..'
 DEFAULT_CITY = r'London'
 DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
 DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
 DEFAULT_API_KEY = input('Enter the access key: ')
 DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&lang=ru&dt={time}&appid={api_key}'
+
+
+# DEFAULT_PARAMETER_DESCRIPTION = {
+#     'current': {
+#         'dt': 'Current time: {value}',
+#         'sunrise': 'Sunrise time: {value}',
+#         'sunset': 'Sunset time: {value}',
+#         'temp': 'Temperature: {value}, ℃',
+#         'feels_like': 'Temperature. This temperature parameter accounts for the human perception of weather: {value}, ℃',
+#         'pressure': ' Atmospheric pressure on the sea level: {value}, hPa',
+#         'humidity': 'Humidity: {value}, %',
+#         'dew_point': 'Atmospheric temperature: {value}, Celsius',
+#         'clouds': 'Cloudiness: {value}, %',
+#         'uvi': 'Current UV index {value}',
+#         'visibility': 'Average visibility: {value}, metres',
+#         'wind_speed': 'Wind speed: {value}, metre/sec',
+#         'wind_gust': 'Wind gust: {value}, metre/sec',
+#         'wind_deg': 'Wind direction: {value}, degrees',
+#         ''
+#     }
+# }
+
 
 class WeatherJSON:
     pass
@@ -199,8 +222,6 @@ def historioutput(query_result: dict, city:str, country:str):
         print('------------------------------------------------------------------------------------------------------------')
 
 
-
-
 def processing_current_output(arguments):
     city = arguments.city
     api_key = arguments.apikey
@@ -249,6 +270,44 @@ def processing_history_output(arguments):
     historioutput(query_result, city=city, country=country)
 
 
+def history_save(query_result:dict, path: str):
+    print('start...')
+    write_data = []
+    for hourly in query_result['hourly']:
+        new_dict = dict(
+            dt=recoding_time(float(hourly.get('dt', 0))),
+            temp=hourly.get('dt', 0),
+            feels_like=hourly.get('feels_like', 0),
+            pressure=hourly.get('hourly', 0),
+            humidity=hourly.get('humidity', 0),
+            dew_point=hourly.get('dew_point', 0),
+            clouds=hourly.get('clouds', 0),
+            visibility=hourly['visibility'],
+            wind_speed=hourly['wind_speed'],
+            wind_gust=hourly.get('wind_gust', 0),
+            wind_deg=hourly['wind_deg'],
+            rain_1h=hourly.get('rain', 0)['1h'],
+            snow=hourly.get('snow', 0),
+            weather_main=hourly['weather'][0]['main'],
+            weather_description=hourly['weather'][0]['description'])
+        write_data.append(new_dict)
+        
+    with open(file=path, mode='w', encoding='utf-8') as file:
+        cin = csv.DictWriter(file, ['dt', 'temp', 'feels_like', 'pressure', 'humidity', 'dew_point','clouds', 'visibility',
+                                    'wind_speed', 'wind_gust', 'wind_deg', 'rain_1h', 'snow', 'weather_main', 'weather_description'])
+        cin.writeheader()
+        cin.writerows(write_data)
+    print('Completed...')
+    # I get the keys
+    
+    hourly_keys = set()
+    for i in range(len(query_result['hourly'])):
+        hourly_keys.update(query_result['hourly'][i].keys())
+    
+    history_data = [{j:i.get(j, 0) for j in hourly_keys} for i in query_result['hourly']]
+    print('1: ', history_data[0])
+    print('2: ', query_result['hourly'][0])
+        
 def processing_save_current(arguments):
     pass
 
@@ -262,12 +321,16 @@ def processing_history_save(arguments):
     time = arguments.time
     api_key = arguments.apikey
     city = arguments.city
+    path = '{path}/{name}-{data}.csv'.format(path=arguments.path_file, name='history', data=time)
     
     # geocoding
     lat, lon, country = geocoding_api(city=city, api_key=api_key)
     # unix
     unix_time = encode_time(time=time)
     query_result = history_api(lat=lat, lon=lon, time=unix_time, api_key=api_key)
+    history_save(query_result, path=path)
+
+
 
 def set_parser(parser: argparse.ArgumentParser):
     subparser = parser.add_subparsers(help="The One Call API provides the following weather data for any geographical coordinates:" +
@@ -345,7 +408,7 @@ def set_parser(parser: argparse.ArgumentParser):
         default='...')
     save_history.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
     save_history.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
-    save_history.add_argument('-path', '--path-to-file', help='File save path', default=DEFAULT_PATH_SAVE_FILE)
+    save_history.add_argument('-path', '--path_file', help='File save path', default=DEFAULT_PATH_SAVE_FILE)
     save_history.set_defaults(callback=processing_history_save)
 
 # добавть форматы сохарения в json или csv 
