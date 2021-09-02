@@ -17,32 +17,45 @@ from requests import api
 
 
 class City:
-    DEFAULT_API_CITY = 'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
-    def __init__(self, lon=None, lat=None, name=None) -> None:
+    DEFAULT_API_CITY_DIRECT = 'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
+    DEFAULT_API_CITY_REVERSE = 'http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={api_key}'
+    def __init__(self, api_key, lon=None, lat=None, name=None) -> None:
+        self.name=name
         self.lon = lon
         self.lat = lat
-
-    def geocoding(self):
+        self.api_key = api_key
+    
+    @classmethod
+    def direct_geocoding(cls, name,  api_key):
         """
-        :return: :class:`Response <Response>` object
+        :return: :
         """
-        answer = requests.get(url=self.DEFAULT_API_CITY.format(city_name=self.city, api_key=self.api_key))
+        answer = requests.get(url=City.DEFAULT_API_CITY_DIRECT.format(city_name=name, api_key=api_key))
         if answer.status_code == 200:
             print(answer.json())
+    
+    @classmethod
+    def reverse_geocoding(cls, lon, lat,  api_key):
+        """
+        :return: :
+        """
+        answer = requests.get(url=City.DEFAULT_API_CITY_REVERSE.format(lat=lat, lon=lon, api_key=api_key))
+        if answer.status_code == 200:
+            return (answer.json())
 
 
-class Weather:
-    def __init__(self, api_key, city='London', time=None, date=None) -> None:
-        self.api_key = api_key
-        self.city = city
-        self.time = time
-        self.date = date
+# class Weather:
+#     def __init__(self, api_key, city='London', time=None, date=None) -> None:
+#         self.api_key = api_key
+#         self.city = city
+#         self.time = time
+#         self.date = date
     
     
 # добавть форматы сохарения в json или csv 
 # не нужно много парсеров для сохра, тип данный запрашиваем через два флага и параметры
 def main():
-    a = Weather(api_key='', city=City(name='Minsk'))
-    a.geocoding()
+    City.direct_geocoding(name='Minsk', api_key='')
+
 if __name__ == '__main__':
     main()
