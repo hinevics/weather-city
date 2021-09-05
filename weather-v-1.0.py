@@ -308,7 +308,7 @@ def history_save(query_result:dict, path: str):
     print('1: ', history_data[0])
     print('2: ', query_result['hourly'][0])
         
-def processing_save_current(arguments):
+def processing_current_save(arguments):
     pass
 
 
@@ -390,7 +390,7 @@ def set_parser(parser: argparse.ArgumentParser):
     save_current.add_argument('-c', '--city', help='City for which weather information is collected', type=str, default=DEFAULT_CITY)
     save_current.add_argument('-k', '--apikey', help='API key', default=DEFAULT_API_KEY)
     save_current.add_argument('-path', '--path-to-file', help='File save path', default=DEFAULT_PATH_SAVE_FILE)
-    save_current.set_defaults(callback=processing_save_current)
+    save_current.set_defaults(callback=processing_current_save)
 
     #forecast
     save_forecast.add_argument('-p', '--parameter', help='Parameter specifying the type of information returned.'
