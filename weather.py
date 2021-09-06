@@ -20,11 +20,15 @@ class City:
     DEFAULT_API_CITY_DIRECT = 'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
     DEFAULT_API_CITY_REVERSE = 'http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={api_key}'
     def __init__(self, api_key, lon=None, lat=None, name=None) -> None:
+        if name is None:
+            pass
+        # elif pass
         self.name=name
-        self.lon = lon
-        self.lat = lat
         self.api_key = api_key
-    
+        self.lon = lon if not (lon is None) else City.direct_geocoding(name=self.name, api_key=self.api_key)['lon']
+        self.lat = lat if not (lat is None) else City.direct_geocoding(name=self.name, api_key=self.api_key)['lat']
+        
+        
     @classmethod
     def direct_geocoding(cls, name,  api_key):
         """
@@ -32,8 +36,9 @@ class City:
         """
         answer = requests.get(url=City.DEFAULT_API_CITY_DIRECT.format(city_name=name, api_key=api_key))
         if answer.status_code == 200:
-            print(answer.json())
-    
+            return answer.json()[0]
+        else:
+            print('STATUS CODE: {a1}'.format(a1=answer.status_code))
     @classmethod
     def reverse_geocoding(cls, lon, lat,  api_key):
         """
@@ -42,6 +47,8 @@ class City:
         answer = requests.get(url=City.DEFAULT_API_CITY_REVERSE.format(lat=lat, lon=lon, api_key=api_key))
         if answer.status_code == 200:
             return (answer.json())
+        else:
+            print('STATUS CODE: {a1}'.format(a1=answer.status_code))
 
 
 # class Weather:
@@ -52,10 +59,11 @@ class City:
 #         self.date = date
     
     
-# добавть форматы сохарения в json или csv 
-# не нужно много парсеров для сохра, тип данный запрашиваем через два флага и параметры
-def main():
-    City.direct_geocoding(name='Minsk', api_key='')
 
+def main():
+    # 'lat': 53.9, 'lon': 27.5667
+    a = City(name='Minsk', api_key='8cd65e1b7f292a69366f2a526046a32c')
+    # print(a.lat)
+    
 if __name__ == '__main__':
     main()
