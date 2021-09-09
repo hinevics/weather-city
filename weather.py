@@ -19,13 +19,16 @@ from requests import api
 # DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&lang=ru&dt={time}&appid={api_key}'
 
 
+
 class City:
     DEFAULT_API_CITY_DIRECT = 'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
     DEFAULT_API_CITY_REVERSE = 'http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={api_key}'
-    def __init__(self, api_key, lon_lat=None, name=None) -> None:
+    def __init__(self, api_key=None, lon_lat=None, name=None) -> None:
         """
         ...description...
         """
+        if api_key is None:
+            raise ValueError
         if (name is None) and (not (lon_lat is None)):
             city_inf = City.reverse_geocoding(lon=lon_lat[0], lat=lon_lat[1], api_key=api_key)
             name = city_inf['name']
