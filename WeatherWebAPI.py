@@ -30,7 +30,7 @@ class City:
         if api_key is None:
             raise ValueError
         if (name is None) and (not (lon_lat is None)):
-            city_inf = City.reverse_geocoding(lon=lon_lat[0], lat=lon_lat[1], api_key=api_key)
+            city_inf = City.reverse_geocoding(lon_lat=lon_lat, api_key=api_key)
             name = city_inf['name']
             country = city_inf['country']
         elif (lon_lat is None) and (not (name is None)):
@@ -64,15 +64,22 @@ class City:
             print('STATUS CODE: {a1}'.format(a1=answer.status_code))
 
 
-# class Weather:
-#     def __init__(self, api_key, city='London', time=None, date=None) -> None:
-#         self.api_key = api_key
-#         self.city = city
-#         self.time = time
-#         self.date = date
+class DateTime:
+    max = 15
+    def __init__(sels):
+        pass
+
+
+class Historical:
+    def __init__(self, api_key:str, city:str, dt:DateTime=DateTime.max) -> None:
+        """
+        ...description...
+        """
+        self.api_key = api_key
+        self.city = City(api_key=api_key, name=city)
     
-
-
+    def query_history_data(self, ):
+        pass
 def main():
     # 'lat': 53.9, 'lon': 27.5667
     # a = City(name='Minsk', api_key='8cd65e1b7f292a69366f2a526046a32c')
