@@ -21,6 +21,9 @@ from requests import api
 
 
 class City:
+    """
+    Этот класс для преоброзования города и работы с данными по городу
+    """
     DEFAULT_API_CITY_DIRECT = 'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
     DEFAULT_API_CITY_REVERSE = 'http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={api_key}'
     def __init__(self, api_key=None, lon_lat=None, name=None) -> None:
@@ -41,6 +44,7 @@ class City:
         self.lon_lat=lon_lat
         self.name = name
         self.country = country
+
     @classmethod
     def direct_geocoding(cls, name:str,  api_key:str) -> dict:
         """
@@ -51,7 +55,7 @@ class City:
             return answer.json()[0]
         else:
             print('STATUS CODE: {a1}'.format(a1=answer.status_code))
-    
+
     @classmethod
     def reverse_geocoding(cls, lon_lat:tuple,  api_key:str) -> dict:
         """
@@ -65,11 +69,15 @@ class City:
 
 
 class DateTime:
+    """
+    Этот класс нужен для создания api работы с датой. нужно преоброзоание даты в UTC и обртано
+    Два метода, котоыре выполняеют эти операции
+    """
     max = 15
     def __init__(sels):
         pass
-
-
+    def creat_data:pass
+# все классы возвращают json
 class Historical:
     def __init__(self, api_key:str, city:str, dt:DateTime=DateTime.max) -> None:
         """
@@ -79,7 +87,27 @@ class Historical:
         self.city = City(api_key=api_key, name=city)
     
     def query_history_data(self, ):
+        """
+        делает запрос по api на исторические данные. Если не пердается параметр dt, то используется стандартный максимлаьный предле выгрузки
+        """
         pass
+
+
+class Current:
+    """
+    текущие данные
+    """
+    pass
+
+
+
+class Hourly:
+    """
+    данные предсказания
+    """
+    pass
+
+
 def main():
     # 'lat': 53.9, 'lon': 27.5667
     # a = City(name='Minsk', api_key='8cd65e1b7f292a69366f2a526046a32c')
