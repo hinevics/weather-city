@@ -80,7 +80,6 @@ class DateTime:
 
 class Historical:
     DEFAULT_API_HISTORY = r'http://history.openweathermap.org/data/2.5/history/city?q={city},{country}&type=hour&start={start}&end={end}&appid={api_key}'
-    
     def __init__(self, api_key:str, city:str, dt:DateTime=DateTime.DEFAULT_DT) -> None:
         """
         ...description...
@@ -88,17 +87,18 @@ class Historical:
         self.api_key = api_key
         self.city = City(api_key=api_key, name=city)
         self.dt = dt
-    
-    def get_weather_api(lat: str, lon: str, part: str, api_key: str):
-        str_request = DEFAULT_API_HISTORY.format(city=city, country=lon, part=part, api_key=api_key)
+
+    @staticmethod
+    def get_weather_api(city:str, country:str, api_key:str, dt:tuple):
+        str_request = Historical.DEFAULT_API_HISTORY.format(city=city, country=country, api_key=api_key, start=dt[0], end=dt[1])
         return requests.get(url=str_request).json()
-    
+
     def query_history_data(self):
         """
         делает запрос по api на исторические данные. Если не пердается параметр dt, то используется стандартный максимлаьный предле выгрузки
         """
-        
-        return
+        a = Historical.get_weather_api(city=self.city.name, country=self.city.country, api_key=self.api_key, dt=self.dt)
+        return None
 
 
 class Current:

@@ -91,8 +91,13 @@ class TestWeatherWebAPI:
         assert test_obj.city.country == 'BY'
         assert test_obj.city.name == 'Minsk'
         assert test_obj.city.lon_lat == (27.5667, 53.9)
-        
-    def test_work_with_history_class_query_data_10(self):
+    
+    def test_work_with_history_class_get_weather_api_10(self):
+        """
+        Affairs request weather
+        """
+    
+    def test_work_with_history_class_query_data_11(self):
         """
         ...
         """
