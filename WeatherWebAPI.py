@@ -4,12 +4,9 @@
 # работа с аналитикой по данным
 # программа строит исторчиеские даныне виде графика изменения осадков
 # I am using api openweathermap.org
-import argparse
 import requests
 import json
-from re import L, sub
 import datetime
-
 from requests import api
 
 # DEFAULT_PATH_SAVE_FILE = r'../{name_doc}.{form}'
@@ -73,24 +70,35 @@ class DateTime:
     Этот класс нужен для создания api работы с датой. нужно преоброзоание даты в UTC и обртано
     Два метода, котоыре выполняеют эти операции
     """
-    max = 15
-    def __init__(sels):
+    # DEFAULT_DT = (start, end)
+    DEFAULT_DT = ('1369728000', '1369789200')
+    def __init__(self):
         pass
-    def creat_data:pass
+    def create_data(self):
+        pass
 # все классы возвращают json
+
 class Historical:
-    def __init__(self, api_key:str, city:str, dt:DateTime=DateTime.max) -> None:
+    DEFAULT_API_HISTORY = r'http://history.openweathermap.org/data/2.5/history/city?q={city},{country}&type=hour&start={start}&end={end}&appid={api_key}'
+    
+    def __init__(self, api_key:str, city:str, dt:DateTime=DateTime.DEFAULT_DT) -> None:
         """
         ...description...
         """
         self.api_key = api_key
         self.city = City(api_key=api_key, name=city)
+        self.dt = dt
     
-    def query_history_data(self, ):
+    def get_weather_api(lat: str, lon: str, part: str, api_key: str):
+        str_request = DEFAULT_API_HISTORY.format(city=city, country=lon, part=part, api_key=api_key)
+        return requests.get(url=str_request).json()
+    
+    def query_history_data(self):
         """
         делает запрос по api на исторические данные. Если не пердается параметр dt, то используется стандартный максимлаьный предле выгрузки
         """
-        pass
+        
+        return
 
 
 class Current:
