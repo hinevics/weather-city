@@ -102,6 +102,9 @@ class DateTime:
 #         return None 
 
 class Historical:
+    """
+    в первой версии делает запрос на сервер и вовращает json
+    """
     DEFAULT_API_HISTORY = r'http://history.openweathermap.org/data/2.5/history/city?q={city},{country}&type=hour&start={start}&end={end}&appid={api_key}'
     
     @classmethod
