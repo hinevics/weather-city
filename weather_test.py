@@ -1,11 +1,13 @@
 from re import A
+
+from requests import api
 import pytest
 import WeatherWebAPI
-
+ 
 DEFAULT_API_KEY = r'8cd65e1b7f292a69366f2a526046a32c'
 DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (27.5667, 53.9)
-ооо
+
 class TestWeatherWebAPI:
     def test_import_modul_weater_1(self):
         """
@@ -77,32 +79,15 @@ class TestWeatherWebAPI:
         Can I use the standard variables of Historical class
         """
         assert WeatherWebAPI.Historical.DEFAULT_API_HISTORY
-        assert WeatherWebAPI.Historical.DEFAULT_DATE_START == '1369728000'
-        assert WeatherWebAPI.Historical.DEFAULT_DATE_END == '1369789200'
+        
     
-    def test_work_withhistory_class_9(self):
+    def test_work_with_history_class_get_weather_api_9(self):
         """
-        ...
+        Обработка исключения при некоректном запросе WeatherAppError
         """
-        test_api_key = '123450'
-        test_obj = WeatherWebAPI.Historical(api_key=test_api_key, city='Minsk')
-        assert test_obj.api_key == test_api_key
-        assert test_obj.dt == WeatherWebAPI.DateTime.DEFAULT_DT
-        assert test_obj.city.country == 'BY'
-        assert test_obj.city.name == 'Minsk'
-        assert test_obj.city.lon_lat == (27.5667, 53.9)
-    
-    def test_work_with_history_class_get_weather_api_10(self):
-        """
-        Affairs request weather
-        """
-    
-    def test_work_with_history_class_query_data_11(self):
-        """
-        ...
-        """
-        test_minsk_data = WeatherWebAPI.Historical(api_key=DEFAULT_API_KEY, city='Minsk')
-        test_minsk_data.query_history_data()
+        test_answer = WeatherWebAPI.Historical.get_weather_api(city="Minsk", country='BY', api_key=DEFAULT_API_KEY)
+        assert test_answer == WeatherWebAPI.WeatherAppError
+
 
 
 class TestWeatherDB:

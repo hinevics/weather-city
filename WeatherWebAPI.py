@@ -4,6 +4,7 @@
 # работа с аналитикой по данным
 # программа строит исторчиеские даныне виде графика изменения осадков
 # I am using api openweathermap.org
+from re import A
 import requests
 import json
 import datetime
@@ -16,10 +17,9 @@ from requests import api
 # DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&lang=ru&dt={time}&appid={api_key}'
 
 
-
 class City:
     """
-    Этот класс для преоброзования города и работы с данными по городу
+    Этот класс для преоброзования города и работы с данными по городу в основном парсере
     """
     DEFAULT_API_CITY_DIRECT = 'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
     DEFAULT_API_CITY_REVERSE = 'http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={api_key}'
@@ -69,6 +69,7 @@ class DateTime:
     """
     Этот класс нужен для создания api работы с датой. нужно преоброзоание даты в UTC и обртано
     Два метода, котоыре выполняеют эти операции
+    Это класс будет вызываться в ядре, чтоб передедать дату в более нормальный вид и обратно
     """
     # DEFAULT_DT = (start, end)
     DEFAULT_DT = ('1369728000', '1369789200')
@@ -78,27 +79,41 @@ class DateTime:
         pass
 # все классы возвращают json
 
+# class Historical:
+#     DEFAULT_API_HISTORY = r'http://history.openweathermap.org/data/2.5/history/city?q={city},{country}&type=hour&start={start}&end={end}&appid={api_key}'
+#     def __init__(self, api_key:str, city:str, dt:DateTime=DateTime.DEFAULT_DT) -> None:
+#         """
+#         ...description...
+#         """
+#         self.api_key = api_key
+#         self.city = City(api_key=api_key, name=city)
+#         self.dt = dt
+
+#     @staticmethod
+#     def get_weather_api(city:str, country:str, api_key:str, dt:tuple):
+#         str_request = Historical.DEFAULT_API_HISTORY.format(city=city, country=country, api_key=api_key, start=dt[0], end=dt[1])
+#         return requests.get(url=str_request).json()
+
+#     def query_history_data(self):
+#         """
+#         делает запрос по api на исторические данные. Если не пердается параметр dt, то используется стандартный максимлаьный предле выгрузки
+#         """
+#         a = Historical.get_weather_api(city=self.city.name, country=self.city.country, api_key=self.api_key, dt=self.dt)
+#         return None 
+
 class Historical:
     DEFAULT_API_HISTORY = r'http://history.openweathermap.org/data/2.5/history/city?q={city},{country}&type=hour&start={start}&end={end}&appid={api_key}'
-    def __init__(self, api_key:str, city:str, dt:DateTime=DateTime.DEFAULT_DT) -> None:
-        """
-        ...description...
-        """
-        self.api_key = api_key
-        self.city = City(api_key=api_key, name=city)
-        self.dt = dt
-
-    @staticmethod
-    def get_weather_api(city:str, country:str, api_key:str, dt:tuple):
+    
+    @classmethod
+    def get_weather_api(cls, city:str, country:str, api_key:str, dt:tuple=DateTime.DEFAULT_DT):
         str_request = Historical.DEFAULT_API_HISTORY.format(city=city, country=country, api_key=api_key, start=dt[0], end=dt[1])
-        return requests.get(url=str_request).json()
-
-    def query_history_data(self):
-        """
-        делает запрос по api на исторические данные. Если не пердается параметр dt, то используется стандартный максимлаьный предле выгрузки
-        """
-        a = Historical.get_weather_api(city=self.city.name, country=self.city.country, api_key=self.api_key, dt=self.dt)
-        return None
+        answer = requests.get(url=str_request)
+        if answer.status_code == '200':
+            return requests.get(url=str_request).json()
+        else:
+            print(answer.status_code)
+            for key in answer.headers.keys():
+                print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
 
 class Current:
@@ -117,8 +132,6 @@ class Hourly:
 
 
 def main():
-    # 'lat': 53.9, 'lon': 27.5667
-    # a = City(name='Minsk', api_key='8cd65e1b7f292a69366f2a526046a32c')
-    a = City(lon_lat=(27.5667, 53.9), api_key='8cd65e1b7f292a69366f2a526046a32c')
+    Historical.get_weather_api(city='str', country='BY', api_key='8cd65e1b7f292a69366f2a526046a32c')
 if __name__ == '__main__':
     main()
