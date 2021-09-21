@@ -5,7 +5,7 @@ import WeatherWebAPI
 DEFAULT_API_KEY = r'8cd65e1b7f292a69366f2a526046a32c'
 DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (27.5667, 53.9)
-
+ооо
 class TestWeatherWebAPI:
     def test_import_modul_weater_1(self):
         """
