@@ -68,26 +68,8 @@ class TestWeatherWebAPI:
         assert result['lat'] == 53.9
         
         
-    def test_can_used_history_class_7(self):
-        """
-        ...
-        """
-        assert WeatherWebAPI.Historical
-        
-    def test_can_use_history_class_and_defualt_value_8(self):
-        """
-        Can I use the standard variables of Historical class
-        """
-        assert WeatherWebAPI.Historical.DEFAULT_API_HISTORY
-        
     
-    def test_work_with_history_class_get_weather_api_9(self):
-        """
-        Обработка исключения при некоректном запросе WeatherAppError
-        """
-        test_answer = WeatherWebAPI.Historical.get_weather_api(city="Minsk", country='BY', api_key=DEFAULT_API_KEY)
-        assert test_answer == WeatherWebAPI.WeatherAppError
-
+    def test_datetime_class_testing_default_date(self)
 
 
 class TestWeatherDB:
