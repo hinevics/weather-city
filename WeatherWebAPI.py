@@ -23,22 +23,22 @@ class City:
     """
     DEFAULT_API_CITY_DIRECT = 'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
     DEFAULT_API_CITY_REVERSE = 'http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={api_key}'
-    def __init__(self, api_key=None, lon_lat=None, name=None) -> None:
+    def __init__(self, api_key=None, lat_lon=None, name=None) -> None:
         """
         ...description...
         """
         if api_key is None:
             raise ValueError
-        if (name is None) and (not (lon_lat is None)):
-            city_inf = City.reverse_geocoding(lon_lat=lon_lat, api_key=api_key)
+        if (name is None) and (not (lat_lon is None)):
+            city_inf = City.reverse_geocoding(lat_lon=lat_lon, api_key=api_key)
             name = city_inf['name']
             country = city_inf['country']
-        elif (lon_lat is None) and (not (name is None)):
+        elif (lat_lon is None) and (not (name is None)):
             city_inf = City.direct_geocoding(name=name, api_key=api_key)
-            lon_lat = city_inf['lon'], city_inf['lat']
+            lat_lon = city_inf['lat'], city_inf['lon']
             country = city_inf['country']
         self.api_key = api_key
-        self.lon_lat=lon_lat
+        self.lat_lon=lat_lon
         self.name = name
         self.country = country
 
@@ -87,11 +87,10 @@ class Historical:
     """
     DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
     @classmethod
-    def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_DT):
+    def get_weather_api(cls, lat_lon:tuple, api_key:str, dt:tuple=DateTime.DEFAULT_DT):
         # Приходяшие данные погороды должын превартиться в класс City
-        city = City(api_key=api_key, name=city)
-        lat_lon = city.
-        str_request = Historical.DEFAULT_API_HISTORY.format(city=city, country=country, api_key=api_key, start=dt[0], end=dt[1])
+        city = City(api_key=api_key, name=city) # создаю объект класс City
+        str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=lat_lon[0], lon=lat_lon[1])
         answer = requests.get(url=str_request)
         print(answer)
         
@@ -119,6 +118,6 @@ class Hourly:
 
 
 def main():
-    Historical.get_weather_api(city='Minsk', country='BY', api_key='8cd65e1b7f292a69366f2a526046a32c')
+    Historical.get_weather_api(city='Minsk', api_key='8864601f4ae98b4994aa53941f6bc733')
 if __name__ == '__main__':
     main()
