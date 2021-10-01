@@ -8,7 +8,7 @@ import time
  
 DEFAULT_API_KEY = r'8864601f4ae98b4994aa53941f6bc733'
 DEFAULT_CITU = r'Minsk'
-DEFAULT_LON_LAT = (27.5667, 53.9)
+DEFAULT_LON_LAT = (53.9, 27.5667)
 
 class TestWeatherWebAPI:
     def test_import_modul_weater_1(self):
@@ -33,7 +33,7 @@ class TestWeatherWebAPI:
         a = WeatherWebAPI.City(api_key=DEFAULT_API_KEY, name="Minsk")
         assert a.name == "Minsk"
         assert a.country == 'BY'
-        assert a.lon_lat == (27.5667, 53.9)
+        assert a.lat_lon == DEFAULT_LON_LAT
 
 
     def test_how_working_class_when_dont_get_api_key_4(self):
@@ -49,7 +49,7 @@ class TestWeatherWebAPI:
         """
         description
         """
-        a = WeatherWebAPI.City(lon_lat=(27.5667, 53.9), api_key=DEFAULT_API_KEY)
+        a = WeatherWebAPI.City(lat_lon=DEFAULT_LON_LAT, api_key=DEFAULT_API_KEY)
         print(a.name)
         assert a.name == 'Horad Minsk'
     
@@ -58,7 +58,7 @@ class TestWeatherWebAPI:
         """
         description
         """
-        result = WeatherWebAPI.City.reverse_geocoding(lon_lat=(27.5667, 53.9), api_key=DEFAULT_API_KEY)
+        result = WeatherWebAPI.City.reverse_geocoding(lat_lon=DEFAULT_LON_LAT, api_key=DEFAULT_API_KEY)
         assert result['name'] == 'Horad Minsk'
         
     def test_how_working_class_city_classmethod_direct_geocoding_6(self):
@@ -67,8 +67,8 @@ class TestWeatherWebAPI:
         """
         result = WeatherWebAPI.City.direct_geocoding(name='Minsk', api_key=DEFAULT_API_KEY)
         print(result)
-        assert result['lon'] == 27.5667
-        assert result['lat'] == 53.9
+        assert result['lon'] == DEFAULT_LON_LAT[1]
+        assert result['lat'] == DEFAULT_LON_LAT[0]
         
         
     

@@ -56,11 +56,11 @@ class City:
             print('STATUS CODE: {a1}'.format(a1=answer.status_code))
 
     @classmethod
-    def reverse_geocoding(cls, lon_lat:tuple,  api_key:str) -> dict:
+    def reverse_geocoding(cls, lat_lon:tuple,  api_key:str) -> dict:
         """
         :return: :
         """
-        answer = requests.get(url=City.DEFAULT_API_CITY_REVERSE.format(lat=lon_lat[1], lon=lon_lat[0], api_key=api_key))
+        answer = requests.get(url=City.DEFAULT_API_CITY_REVERSE.format(lat=lat_lon[0], lon=lat_lon[1], api_key=api_key))
         if answer.status_code == 200:
             return answer.json()[0]
         else:
