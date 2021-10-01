@@ -72,7 +72,7 @@ class DateTime:
     Это класс будет вызываться в ядре, чтоб передедать дату в более нормальный вид и обратно
     """
     # DEFAULT_DT = (start, end)
-    DEFAULT_DT = ('1369728000', '1369789200')
+    DEFAULT_DT = datetime.
     def __init__(self):
         pass
     def create_data(self):
@@ -83,23 +83,22 @@ class Historical:
     """
     Historical weather data
     
-    Исторические данные о погоде за предыдущие 5 дней
+    Historical weather data for the previous 5 days
     """
     DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
     @classmethod
-    def get_weather_api(cls, lat_lon:tuple, api_key:str, dt:tuple=DateTime.DEFAULT_DT):
-        # Приходяшие данные погороды должын превартиться в класс City
-        city = City(api_key=api_key, name=city) # создаю объект класс City
-        str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=lat_lon[0], lon=lat_lon[1])
-        answer = requests.get(url=str_request)
+    def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_DT):
+        # Incoming weather data must be converted to the City class
+        city = City(api_key=api_key, name=city) # I create a City class object
+        str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=)
+        answer = requests.get(url=str_request)        
         print(answer)
-        
-        if answer.status_code == '200':
-            return requests.get(url=str_request).json()
-        else:
-            print(answer.status_code)
-            for key in answer.headers.keys():
-                print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
+        # if answer.status_code == '200':
+        #     return requests.get(url=str_request).json()
+        # else:
+        #     print(answer.status_code)
+        #     for key in answer.headers.keys():
+        #         print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
 
 class Current:
