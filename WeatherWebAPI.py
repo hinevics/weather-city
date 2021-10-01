@@ -4,6 +4,7 @@
 # работа с аналитикой по данным
 # программа строит исторчиеские даныне виде графика изменения осадков
 # I am using api openweathermap.org
+from enum import unique
 from re import A, I
 import requests
 import json
@@ -73,10 +74,22 @@ class DateTime:
     It has a default parameter that is called from the class if the user does not pass the time when requesting historical data : DEFAULT_HISTORICAL_DATETIME
     """
     DEFAULT_HISTORICAL_DATETIME = time.mktime((datetime.date.today() - datetime.timedelta(5)).timetuple())
-    def __init__(self):
-        pass
-    def create_data(self):
-        pass
+    DEFAULT_TODAY_DATETIME = time.mktime(datetime.date.today().timetuple())
+    
+    @classmethod
+    def create_unix_datetime(cls, utctime:str):
+        """
+            The function converts utc date to unix
+        """
+        return time.mktime(datetime.datetime.strptime(utctime, r'%d.%m.%Y').timetuple())
+
+    @classmethod
+    def create_utc_datetime(cls, unixdatetime):
+        """
+            Converts unix date to utc and returns as a string
+        """
+        utcdatetime = datetime.datetime.utcfromtimestamp(unixdatetime).timetuple()
+        return '{d}.{m}.{Y}'.format(d=utcdatetime.tm_mday, m=utcdatetime.tm_mon, Y=utcdatetime.tm_year)
 
 
 class Historical:
@@ -117,6 +130,7 @@ class Hourly:
 
 
 def main():
-    Historical.get_weather_api(city='Minsk', api_key=DEFAULT_API_KEY)
+    unix = DateTime.create_unix_datetime('21.9.2021')
+    print(DateTime.create_utc_datetime(unix))
 if __name__ == '__main__':
     main()
