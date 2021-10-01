@@ -90,14 +90,16 @@ class TestWeatherWebAPI:
         assert nowunix == WeatherWebAPI.DateTime.DEFAULT_TODAY_DATETIME
         
 
-    def test_datetime_class_testing_create_dattime_unix_format(self):
+    def test_datetime_class_testing_create_dattime_unix_format_9(self):
         """
         Create datetime data in unix format.
         The function takes parameters as a string, and returns as an unix time format
         """
         test_query = '20.09.2021' # test date
-        
+        test_query_unix = time.mktime(datetime.datetime.strptime(test_query, r'%d.%m.%Y').timetuple())  # test time value in unix
+        assert WeatherWebAPI.DateTime.create_datetime(test_query) == test_query_unix
     
+    # def test
     
 class TestWeatherDB:
     pass
