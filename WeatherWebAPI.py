@@ -8,14 +8,16 @@ from re import A, I
 import requests
 import json
 import datetime
+import time
 from requests import api
+from requests.models import DEFAULT_REDIRECT_LIMIT
 
 # DEFAULT_PATH_SAVE_FILE = r'../{name_doc}.{form}'
 # DEFAULT_CITY = r'London'
 # DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
 # DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
 # DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&lang=ru&dt={time}&appid={api_key}'
-
+DEFAULT_API_KEY = r'8864601f4ae98b4994aa53941f6bc733'
 
 class City:
     """
@@ -71,8 +73,7 @@ class DateTime:
     Два метода, котоыре выполняеют эти операции
     Это класс будет вызываться в ядре, чтоб передедать дату в более нормальный вид и обратно
     """
-    # DEFAULT_DT = (start, end)
-    DEFAULT_DT = datetime.
+    DEFAULT_DATETIME = ...
     def __init__(self):
         pass
     def create_data(self):
@@ -87,10 +88,10 @@ class Historical:
     """
     DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
     @classmethod
-    def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_DT):
+    def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_DATETIME):
         # Incoming weather data must be converted to the City class
         city = City(api_key=api_key, name=city) # I create a City class object
-        str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=)
+        str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
         answer = requests.get(url=str_request)        
         print(answer)
         # if answer.status_code == '200':
@@ -117,6 +118,6 @@ class Hourly:
 
 
 def main():
-    Historical.get_weather_api(city='Minsk', api_key='8864601f4ae98b4994aa53941f6bc733')
+    Historical.get_weather_api(city='Minsk', api_key=DEFAULT_API_KEY)
 if __name__ == '__main__':
     main()

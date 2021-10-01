@@ -3,8 +3,10 @@ from re import A
 from requests import api
 import pytest
 import WeatherWebAPI
+import datetime
+import time
  
-DEFAULT_API_KEY = r'8cd65e1b7f292a69366f2a526046a32c'
+DEFAULT_API_KEY = r'8864601f4ae98b4994aa53941f6bc733'
 DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (27.5667, 53.9)
 
@@ -64,12 +66,20 @@ class TestWeatherWebAPI:
         description
         """
         result = WeatherWebAPI.City.direct_geocoding(name='Minsk', api_key=DEFAULT_API_KEY)
+        print(result)
         assert result['lon'] == 27.5667
         assert result['lat'] == 53.9
         
         
     
-    def test_datetime_class_testing_default_date(self)
+    def test_datetime_class_testing_default_date(self):
+        """
+        Test of the default time operation
+        """
+        deltatime = datetime.date.today() - datetime.timedelta(5)
+        unixdelta = time.mktime(deltatime.timetuple())
+        assert unixdelta == WeatherWebAPI.DateTime.DEFAULT_DATETIME
+        
 
 
 class TestWeatherDB:
