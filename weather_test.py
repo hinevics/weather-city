@@ -72,13 +72,13 @@ class TestWeatherWebAPI:
         
         
     
-    def test_datetime_class_testing_default_date(self):
+    def test_datetime_class_testing_default_date_7(self):
         """
         Test of the default time operation
         """
         deltatime = datetime.date.today() - datetime.timedelta(5)
         unixdelta = time.mktime(deltatime.timetuple())
-        assert unixdelta == WeatherWebAPI.DateTime.DEFAULT_DATETIME
+        assert unixdelta == WeatherWebAPI.DateTime.DEFAULT_HISTORICAL_DATETIME
         
 
 

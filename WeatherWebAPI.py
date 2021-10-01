@@ -69,11 +69,10 @@ class City:
 
 class DateTime:
     """
-    Этот класс нужен для создания api работы с датой. нужно преоброзоание даты в UTC и обртано
-    Два метода, котоыре выполняеют эти операции
-    Это класс будет вызываться в ядре, чтоб передедать дату в более нормальный вид и обратно
+    This is a class for working with date and time when preparing api requests
+    It has a default parameter that is called from the class if the user does not pass the time when requesting historical data : DEFAULT_HISTORICAL_DATETIME
     """
-    DEFAULT_DATETIME = ...
+    DEFAULT_HISTORICAL_DATETIME = time.mktime((datetime.date.today() - datetime.timedelta(5)).timetuple())
     def __init__(self):
         pass
     def create_data(self):
@@ -88,7 +87,7 @@ class Historical:
     """
     DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
     @classmethod
-    def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_DATETIME):
+    def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_HISTORICAL_DATETIME):
         # Incoming weather data must be converted to the City class
         city = City(api_key=api_key, name=city) # I create a City class object
         str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
