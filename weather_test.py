@@ -108,7 +108,24 @@ class TestWeatherWebAPI:
         test_unix_time = time.mktime(datetime.datetime.strptime(test_time, r'%d.%m.%Y').timetuple())  # transferred value
         assert WeatherWebAPI.DateTime.create_utc_datetime(test_unix_time) == test_time
     
+    def test_historical_class_can_use_default_var_11(self):
+        """
+            Calling the default variable
+        """
+        pass
     
+    def test_historical_class_can_use_classmethod_get_weather_when_used_default_dt_12(self):
+        """
+            Can I use the get_weather class method.
+            Method operation at default time.
+        """
+        pass
+    
+    def test_historical_class_can_use_classmethod_get_weather_when_used_dt_13(self):
+        """
+            How the Historical get_weather class method works when the time is passed to it 
+        """
+        pass
 
     
 class TestWeatherDB:
