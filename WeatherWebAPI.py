@@ -88,8 +88,8 @@ class DateTime:
         """
             Converts unix date to utc and returns as a string
         """
-        utcdatetime = datetime.datetime.utcfromtimestamp(unixdatetime).timetuple()
-        # I ran into a problem: if you convert the date from unix to utc, the conversion goes to -1 day!
+        utcdatetime = time.localtime(unixdatetime)
+        # There are different time formats: UTC, unix, GMT
         return '{d}.{m}.{Y}'.format(d=utcdatetime.tm_mday, m=utcdatetime.tm_mon, Y=utcdatetime.tm_year)
 
 
@@ -132,6 +132,7 @@ class Hourly:
 
 def main():
     unix = DateTime.create_unix_datetime('21.9.2021')
+    print(unix)
     print(DateTime.create_utc_datetime(unix))
 if __name__ == '__main__':
     main()
