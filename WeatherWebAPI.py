@@ -89,6 +89,7 @@ class DateTime:
             Converts unix date to utc and returns as a string
         """
         utcdatetime = datetime.datetime.utcfromtimestamp(unixdatetime).timetuple()
+        # I ran into a problem: if you convert the date from unix to utc, the conversion goes to -1 day!
         return '{d}.{m}.{Y}'.format(d=utcdatetime.tm_mday, m=utcdatetime.tm_mon, Y=utcdatetime.tm_year)
 
 
