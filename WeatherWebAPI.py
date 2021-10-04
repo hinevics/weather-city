@@ -77,14 +77,14 @@ class DateTime:
     DEFAULT_TODAY_DATETIME = time.mktime(datetime.date.today().timetuple())
     
     @classmethod
-    def create_unix_datetime(cls, utctime:str):
+    def create_unix(cls, utctime:str):
         """
             The function converts utc date to unix
         """
         return time.mktime(datetime.datetime.strptime(utctime, r'%d.%m.%Y').timetuple())
 
     @classmethod
-    def create_utc_datetime(cls, unixdatetime):
+    def create_utc(cls, unixdatetime):
         """
             Converts unix date to utc and returns as a string
         """
@@ -92,10 +92,13 @@ class DateTime:
         # There are different time formats: UTC, unix, GMT
         return '{d}.{m}.{Y}'.format(d=utcdatetime.tm_mday, m=utcdatetime.tm_mon, Y=utcdatetime.tm_year)
 
-
     @classmethod
-    def creat_unix_time(cls, datetime:datetime.datetime):
-        pass
+    def create_time_unix_from_datetime(cls, datetime:datetime.datetime):
+        """
+            Creating unix time from datetime
+        """
+        return time.mktime(datetime.utcnow().timetuple())
+    
     
 class Historical:
     """
