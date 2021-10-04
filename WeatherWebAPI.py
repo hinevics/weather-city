@@ -93,6 +93,10 @@ class DateTime:
         return '{d}.{m}.{Y}'.format(d=utcdatetime.tm_mday, m=utcdatetime.tm_mon, Y=utcdatetime.tm_year)
 
 
+    @classmethod
+    def creat_unix_time(cls, datetime:datetime.datetime):
+        pass
+    
 class Historical:
     """
     Historical weather data
@@ -107,12 +111,12 @@ class Historical:
         str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
         answer = requests.get(url=str_request)        
         print(answer)
-        # if answer.status_code == '200':
-        #     return requests.get(url=str_request).json()
-        # else:
-        #     print(answer.status_code)
-        #     for key in answer.headers.keys():
-        #         print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
+        if answer.status_code == '200':
+            return requests.get(url=str_request).json()
+        else:
+            print(answer.status_code)
+            for key in answer.headers.keys():
+                print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
 
 class Current:
@@ -131,8 +135,9 @@ class Hourly:
 
 
 def main():
-    unix = DateTime.create_unix_datetime('21.9.2021')
-    print(unix)
-    print(DateTime.create_utc_datetime(unix))
+    test_str_dt = datetime.datetime.utcnow()
+
+    unix_time = time.mktime(test_str_dt.timetuple())
+    print(unix_time)
 if __name__ == '__main__':
     main()
