@@ -9,7 +9,7 @@ import time
 DEFAULT_API_KEY = r'8864601f4ae98b4994aa53941f6bc733'
 DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (53.9, 27.5667)
-
+DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
 class TestWeatherWebAPI:
     def test_import_modul_weater_1(self):
         """
@@ -112,16 +112,27 @@ class TestWeatherWebAPI:
         """
             Calling the default variable
         """
-        pass
+        assert WeatherWebAPI.Historical.DEFAULT_API_HISTORY == DEFAULT_API_HISTORY
     
-    def test_historical_class_can_use_classmethod_get_weather_when_used_default_dt_12(self):
+    def test_historical_class_can_fill_default_parameter_with_new_values_12(self):
+        """
+            Check the default parameter. Substituting new values there
+        """
+        test_city = 'London'
+        test_lat, test_lon = WeatherWebAPI.City(api_key=DEFAULT_API_KEY, name=test_city).lat_lon
+        test_res = DEFAULT_API_HISTORY.format(lat=)
+    
+    def test_historical_class_can_use_classmethod_get_weather_when_used_default_dt_13(self):
         """
             Can I use the get_weather class method.
             Method operation at default time.
         """
-        pass
+        test_city = 'Minsk'
+        test_lat, test_lon = WeatherWebAPI.City(api_key=DEFAULT_API_KEY, name='Minsk').lat_lon
+        assert WeatherWebAPI.Historical.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY)['lat'] == test_lat
+        assert WeatherWebAPI.Historical.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY)['lon'] == test_lon
     
-    def test_historical_class_can_use_classmethod_get_weather_when_used_dt_13(self):
+    def test_historical_class_can_use_classmethod_get_weather_when_used_dt_14(self):
         """
             How the Historical get_weather class method works when the time is passed to it 
         """
