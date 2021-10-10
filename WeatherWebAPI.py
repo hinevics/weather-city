@@ -4,14 +4,10 @@
 # работа с аналитикой по данным
 # программа строит исторчиеские даныне виде графика изменения осадков
 # I am using api openweathermap.org
-from enum import unique
-from re import A, I
 import requests
 import json
 import datetime
 import time
-from requests import api
-from requests.models import DEFAULT_REDIRECT_LIMIT
 
 # DEFAULT_PATH_SAVE_FILE = r'../{name_doc}.{form}'
 # DEFAULT_CITY = r'London'
@@ -73,7 +69,7 @@ class DateTime:
     This is a class for working with date and time when preparing api requests
     It has a default parameter that is called from the class if the user does not pass the time when requesting historical data : DEFAULT_HISTORICAL_DATETIME
     """
-    DEFAULT_HISTORICAL_DATETIME = time.mktime((datetime.date.today() - datetime.timedelta(5)).timetuple())
+    DEFAULT_HISTORICAL_DATETIME = int(time.mktime((datetime.date.today() - datetime.timedelta(5)).timetuple()))
     DEFAULT_TODAY_DATETIME = time.mktime(datetime.date.today().timetuple())
     
     @classmethod
@@ -106,14 +102,13 @@ class Historical:
     
     Historical weather data for the previous 5 days
     """
-    DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
+    DEFAULT_API_HISTORY = 'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
     @classmethod
     def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_HISTORICAL_DATETIME):
         # Incoming weather data must be converted to the City class
         city = City(api_key=api_key, name=city) # I create a City class object
         str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
-        answer = requests.get(url=str_request)        
-        print(answer)
+        answer = requests.get(url=str_request)
         if answer.status_code == '200':
             return requests.get(url=str_request).json()
         else:
@@ -138,9 +133,10 @@ class Hourly:
 
 
 def main():
-    test_str_dt = datetime.datetime.utcnow()
-
-    unix_time = time.mktime(test_str_dt.timetuple())
-    print(unix_time)
+    import requests
+    print(requests.get(url='https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=27.5667&lon=53.9&dt=1633724656&appid=8864601f4ae98b4994aa53941f6bc733').json())
+    # test_city = 'Minsk'
+    # test_lat, test_lon = City(api_key=DEFAULT_API_KEY, name='Minsk').lat_lon
+    # Historical.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY)
 if __name__ == '__main__':
     main()
