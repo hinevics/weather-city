@@ -109,7 +109,7 @@ class Historical:
         city = City(api_key=api_key, name=city) # I create a City class object
         str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
         answer = requests.get(url=str_request)
-        if answer.status_code == '200':
+        if answer.status_code == 200:
             return requests.get(url=str_request).json()
         else:
             print(answer.status_code)
@@ -133,10 +133,6 @@ class Hourly:
 
 
 def main():
-    import requests
-    print(requests.get(url='https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=27.5667&lon=53.9&dt=1633724656&appid=8864601f4ae98b4994aa53941f6bc733').json())
-    # test_city = 'Minsk'
-    # test_lat, test_lon = City(api_key=DEFAULT_API_KEY, name='Minsk').lat_lon
-    # Historical.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY)
+    print(Historical.get_weather_api(city='Minsk', api_key=DEFAULT_API_KEY)['lat'])
 if __name__ == '__main__':
     main()
