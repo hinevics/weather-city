@@ -148,7 +148,6 @@ class TestWeatherWebAPI:
     #     """
     #         How the Historical get_weather class method works when the time is passed to it 
     #     """
-    #     pass
 
     
 class TestWeatherDB:

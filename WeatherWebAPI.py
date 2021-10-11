@@ -112,6 +112,7 @@ class Historical:
         print(str_request)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
+            print('Все хорошо! Мы вас любим ❤️❤️❤️')
             return answer.json()
         else:
             print(answer.status_code)
