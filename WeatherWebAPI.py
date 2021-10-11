@@ -73,7 +73,7 @@ class DateTime:
     """
     DEFAULT_TIMEDELTA = 4.9
     DEFAULT_HISTORICAL_DATETIME = int(time.mktime((datetime.date.today() - datetime.timedelta(DEFAULT_TIMEDELTA)).timetuple()))
-    DEFAULT_TODAY_DATETIME = time.mktime(datetime.date.today().timetuple())
+    DEFAULT_TODAY_DATETIME = int(time.mktime(datetime.date.today().timetuple()))
     
     @classmethod
     def create_unix(cls, utctime:str):
@@ -139,9 +139,10 @@ class Hourly:
 
 
 def main():
-    dt = DateTime.create_unix('9.10.2021')
-    a = Historical.get_weather_api(city=City(name='Minsk', api_key=DEFAULT_API_KEY), api_key=DEFAULT_API_KEY, dt=dt)['current']['dt']
-    print(DateTime.create_utc(unixdatetime=a))
-    # print(a)
+    # dt = DateTime.create_unix('9.10.2021')
+    # a = Historical.get_weather_api(city=City(name='Minsk', api_key=DEFAULT_API_KEY), api_key=DEFAULT_API_KEY, dt=dt)['current']['dt']
+    # print(DateTime.create_utc(unixdatetime=a))
+    print(DateTime.create_utc(DateTime.DEFAULT_TODAY_DATETIME))
+    print(DateTime.create_utc(1633987116))
 if __name__ == '__main__':
     main()

@@ -1,4 +1,4 @@
-from re import A
+from re import A, U, UNICODE
 
 from requests import api
 import pytest
@@ -9,7 +9,9 @@ import time
 DEFAULT_API_KEY = r'8864601f4ae98b4994aa53941f6bc733'
 DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (53.9, 27.5667)
+
 DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
+DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={minutely,hourly,daily,alerts}&appid={api_key}'
 class TestWeatherWebAPI:
     
     # Testing the module
@@ -148,7 +150,35 @@ class TestWeatherWebAPI:
         date_query_unix = WeatherWebAPI.Historical.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY, dt=test_unix_time)['current']['dt']
         date_query = WeatherWebAPI.DateTime.create_utc(unixdatetime=date_query_unix)
         assert date_query == test_time
+    
+    def test_can_use_class_current_16(self):
+        """
+            I can import the class Current
+        """
+        assert WeatherWebAPI.Current
+    
+    def test_checking_default_api_class_current_17(self):
+        """
+            Checking the default api
+        """
+        assert DEFAULT_API_CURRENT == WeatherWebAPI.Current.DEFAULT_API_CURRENT
         
+    def test_can_use_method_get_weather_api_18(self):
+        """
+            Is there a method for executing the query
+        """
+        assert WeatherWebAPI.Current.get_weather_api
+    
+    
+    def test_can_query_current_weather_19(self):
+        """
+            Checking the work of the method get_weather_api class Current
+        """
+        name_city = 'Minsk'
+        test_city = WeatherWebAPI.City(name=name_city, api_key=DEFAULT_API_KEY)
+        current_dt = WeatherWebAPI.Current.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY)['current']['dt']
+        now_dt = int(time.mktime(datetime.date.today().timetuple()))
+        assert WeatherWebAPI.DateTime.create_utc(unixdatetime=now_dt) == WeatherWebAPI.DateTime.create_utc(unixdatetime=current_dt)
 
     
 class TestWeatherDB:
