@@ -9,6 +9,8 @@ import json
 import datetime
 import time
 
+from requests import api
+
 # DEFAULT_PATH_SAVE_FILE = r'../{name_doc}.{form}'
 # DEFAULT_CITY = r'London'
 # DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
@@ -78,7 +80,7 @@ class DateTime:
         """
             The function converts utc date to unix
         """
-        return time.mktime(datetime.datetime.strptime(utctime, r'%d.%m.%Y').timetuple())
+        return int(time.mktime(datetime.datetime.strptime(utctime, r'%d.%m.%Y').timetuple()))
 
     @classmethod
     def create_utc(cls, unixdatetime):
@@ -105,14 +107,15 @@ class Historical:
     """
     DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
     @classmethod
-    def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_HISTORICAL_DATETIME):
+    def get_weather_api(cls, city:City, api_key:str, dt:int=DateTime.DEFAULT_HISTORICAL_DATETIME):
+        """
+            When this method is called, the City object and the int number corresponding to the time are passed to it 
+        """
         # Incoming weather data must be converted to the City class
-        city = City(api_key=api_key, name=city) # I create a City class object
         str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
-        print(str_request)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
-            print('Все хорошо! Мы вас любим ❤️❤️❤️')
+            print('I love you! ❤️❤️❤️')
             return answer.json()
         else:
             print(answer.status_code)
@@ -136,6 +139,9 @@ class Hourly:
 
 
 def main():
-    print(Historical.get_weather_api(city='Minsk', api_key=DEFAULT_API_KEY)['lat'])
+    dt = DateTime.create_unix('9.10.2021')
+    a = Historical.get_weather_api(city=City(name='Minsk', api_key=DEFAULT_API_KEY), api_key=DEFAULT_API_KEY, dt=dt)['current']['dt']
+    print(DateTime.create_utc(unixdatetime=a))
+    # print(a)
 if __name__ == '__main__':
     main()
