@@ -11,7 +11,8 @@ DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (53.9, 27.5667)
 DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
 class TestWeatherWebAPI:
-    def test_import_modul_weater_1(self):
+    
+    def test_import_module_weather_1(self):
         """
             description...
         """
@@ -76,7 +77,7 @@ class TestWeatherWebAPI:
         """
             Test of the default time operation
         """
-        deltatime = datetime.date.today() - datetime.timedelta(5)
+        deltatime = datetime.date.today() - datetime.timedelta(WeatherWebAPI.DateTime.DEFAULT_TIMEDELTA)
         unixdelta = time.mktime(deltatime.timetuple())
         assert unixdelta == WeatherWebAPI.DateTime.DEFAULT_HISTORICAL_DATETIME
     

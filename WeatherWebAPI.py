@@ -69,7 +69,8 @@ class DateTime:
     This is a class for working with date and time when preparing api requests
     It has a default parameter that is called from the class if the user does not pass the time when requesting historical data : DEFAULT_HISTORICAL_DATETIME
     """
-    DEFAULT_HISTORICAL_DATETIME = int(time.mktime((datetime.date.today() - datetime.timedelta(5)).timetuple()))
+    DEFAULT_TIMEDELTA = 4.9
+    DEFAULT_HISTORICAL_DATETIME = int(time.mktime((datetime.date.today() - datetime.timedelta(DEFAULT_TIMEDELTA)).timetuple()))
     DEFAULT_TODAY_DATETIME = time.mktime(datetime.date.today().timetuple())
     
     @classmethod
@@ -102,15 +103,16 @@ class Historical:
     
     Historical weather data for the previous 5 days
     """
-    DEFAULT_API_HISTORY = 'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
+    DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
     @classmethod
     def get_weather_api(cls, city:str, api_key:str, dt:tuple=DateTime.DEFAULT_HISTORICAL_DATETIME):
         # Incoming weather data must be converted to the City class
         city = City(api_key=api_key, name=city) # I create a City class object
         str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
+        print(str_request)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
-            return requests.get(url=str_request).json()
+            return answer.json()
         else:
             print(answer.status_code)
             for key in answer.headers.keys():
