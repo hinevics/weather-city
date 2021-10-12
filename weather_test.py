@@ -195,17 +195,26 @@ class TestWeatherWebAPI:
 
     def test_can_use_default_api_weather_minute_21(self):
         """
-            Работают ли парметры по умолчанию
+            Работают ли парметры по умолчанию форма api для минутного прогноз на 1 час
         """
         assert WeatherWebAPI.Hourly.DEFAULT_API_FORECAST_MINUTE == DEFAULT_API_FORECAST_MINUTE
     
-    def test_can_use_method_get_minute_weather_21(self):
+    def test_can_use_default_api_weather_hourly_22(self):
+        """
+            Работают ли парметры по умолчанию форма api для почасового прогноз на 1 час
+        """
+        assert WeatherWebAPI.Hourly.DEFAULT_API_FORECAST_HOURLY == DEFAULT_API_FORECAST_HOURLY
+
+    def test_can_use_default_api_weather_hourly_23(self):
+        
+    
+    def test_can_use_method_get_minute_weather_ (self):
         """
             Я могу использовать метод get_minute_weather
         """
         assert WeatherWebAPI.Forecast.get_minute_weather
     
-    def test_can_use_method_get_hourly_weather_22(self):
+    def test_can_use_method_get_hourly_weather_ (self):
         """
             Я могу использовать метод get_hourly_weather
         """
