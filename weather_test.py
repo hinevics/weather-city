@@ -181,6 +181,18 @@ class TestWeatherWebAPI:
         now_dt = int(time.mktime(datetime.date.today().timetuple()))
         assert WeatherWebAPI.DateTime.create_utc(unixdatetime=now_dt) == WeatherWebAPI.DateTime.create_utc(unixdatetime=current_dt)
 
+    # class Hourly
+    def test_20(self):
+        pass
+
+    def test_21(self):
+        pass
+
+    def test_22(self):
+        pass
+
+    def test_23(self):
+        pass
     
 class TestWeatherDB:
     pass
