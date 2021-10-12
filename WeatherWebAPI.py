@@ -107,7 +107,7 @@ class Historical:
     """
     DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
     @classmethod
-    def get_weather_api(cls, city:City, api_key:str, dt:int=DateTime.DEFAULT_HISTORICAL_DATETIME):
+    def get_weather(cls, city:City, api_key:str, dt:int=DateTime.DEFAULT_HISTORICAL_DATETIME):
         """
             When this method is called, the City object and the int number corresponding to the time are passed to it 
         """
@@ -129,7 +129,7 @@ class Current:
     """
     DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
     @classmethod
-    def get_weather_api(cls, city:City, api_key:str):
+    def get_weather(cls, city:City, api_key:str):
         """
             ...description...
         """
@@ -146,12 +146,16 @@ class Current:
 
 
 
-class Hourly:
+class Forecast:
     """
     данные предсказания
     """
-    pass
+    DEFAULT_API_FORECAST = r''
 
+    @classmethod
+    def get_minute_weather(cls,):
+        pass
+    
 
 def main():
     # dt = DateTime.create_unix('9.10.2021')
