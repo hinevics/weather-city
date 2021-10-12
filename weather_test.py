@@ -11,7 +11,7 @@ DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (53.9, 27.5667)
 
 DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
-DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={minutely,hourly,daily,alerts}&appid={api_key}'
+DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
 class TestWeatherWebAPI:
     
     # Testing the module
@@ -151,6 +151,7 @@ class TestWeatherWebAPI:
         date_query = WeatherWebAPI.DateTime.create_utc(unixdatetime=date_query_unix)
         assert date_query == test_time
     
+    # class Current
     def test_can_use_class_current_16(self):
         """
             I can import the class Current

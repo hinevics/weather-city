@@ -125,9 +125,24 @@ class Historical:
 
 class Current:
     """
-    текущие данные
+        ...description...
     """
-    pass
+    DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
+    @classmethod
+    def get_weather_api(cls, city:City, api_key:str):
+        """
+            ...description...
+        """
+        lat, lon = city.lat_lon
+        str_request = Current.DEFAULT_API_CURRENT.format(lat=lat, lon=lon, api_key=api_key)
+        answer = requests.get(url=str_request)
+        if answer.status_code == 200:
+            print('I love you! ❤️❤️❤️')
+            return answer.json()
+        else:
+            print(answer.status_code)
+            for key in answer.headers.keys():
+                print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
 
 
