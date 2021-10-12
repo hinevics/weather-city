@@ -12,6 +12,10 @@ DEFAULT_LON_LAT = (53.9, 27.5667)
 
 DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
 DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
+DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&appid={api_key}'
+DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
+DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current, minutely,hourly,alerts&appid={api_key}'
+
 class TestWeatherWebAPI:
     
     # Testing the module
@@ -137,8 +141,8 @@ class TestWeatherWebAPI:
         """
         test_city = WeatherWebAPI.City(api_key=DEFAULT_API_KEY, name='Minsk')
         test_lat, test_lon = test_city.lat_lon
-        assert WeatherWebAPI.Historical.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY)['lat'] == test_lat
-        assert WeatherWebAPI.Historical.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY)['lon'] == test_lon
+        assert WeatherWebAPI.Historical.get_weather(city=test_city, api_key=DEFAULT_API_KEY)['lat'] == test_lat
+        assert WeatherWebAPI.Historical.get_weather(city=test_city, api_key=DEFAULT_API_KEY)['lon'] == test_lon
     
     def test_historical_class_can_use_classmethod_get_weather_when_used_dt_15(self):
         """
@@ -147,7 +151,7 @@ class TestWeatherWebAPI:
         test_time = '9.10.2021'
         test_unix_time = WeatherWebAPI.DateTime.create_unix(utctime=test_time)
         test_city = WeatherWebAPI.City(name='London', api_key=DEFAULT_API_KEY)
-        date_query_unix = WeatherWebAPI.Historical.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY, dt=test_unix_time)['current']['dt']
+        date_query_unix = WeatherWebAPI.Historical.get_weather(city=test_city, api_key=DEFAULT_API_KEY, dt=test_unix_time)['current']['dt']
         date_query = WeatherWebAPI.DateTime.create_utc(unixdatetime=date_query_unix)
         assert date_query == test_time
     
@@ -168,7 +172,7 @@ class TestWeatherWebAPI:
         """
             Is there a method for executing the query
         """
-        assert WeatherWebAPI.Current.get_weather_api
+        assert WeatherWebAPI.Current.get_weather
     
     
     def test_can_query_current_weather_19(self):
@@ -177,19 +181,41 @@ class TestWeatherWebAPI:
         """
         name_city = 'Minsk'
         test_city = WeatherWebAPI.City(name=name_city, api_key=DEFAULT_API_KEY)
-        current_dt = WeatherWebAPI.Current.get_weather_api(city=test_city, api_key=DEFAULT_API_KEY)['current']['dt']
+        current_dt = WeatherWebAPI.Current.get_weather(city=test_city, api_key=DEFAULT_API_KEY)['current']['dt']
         now_dt = int(time.mktime(datetime.date.today().timetuple()))
         assert WeatherWebAPI.DateTime.create_utc(unixdatetime=now_dt) == WeatherWebAPI.DateTime.create_utc(unixdatetime=current_dt)
 
-    # class Hourly
-    def test_20(self):
-        pass
+    # class Forecast
+    
+    def test_can_used_class_forecast_20(self):
+        """
+            Могу ли я использовать этот класс
+        """
+        assert WeatherWebAPI.Forecast
 
-    def test_21(self):
-        pass
-
-    def test_22(self):
-        pass
+    def test_can_use_default_api_weather_minute_21(self):
+        """
+            Работают ли парметры по умолчанию
+        """
+        assert WeatherWebAPI.Hourly.DEFAULT_API_FORECAST_MINUTE == DEFAULT_API_FORECAST_MINUTE
+    
+    def test_can_use_method_get_minute_weather_21(self):
+        """
+            Я могу использовать метод get_minute_weather
+        """
+        assert WeatherWebAPI.Forecast.get_minute_weather
+    
+    def test_can_use_method_get_hourly_weather_22(self):
+        """
+            Я могу использовать метод get_hourly_weather
+        """
+        assert WeatherWebAPI.Forecast.get_hourly_weather
+    
+    def test_can_use_method_get_daily_weather_23(self):
+        """
+            Я могу использовать метод get_daily_weather
+        """
+        assert WeatherWebAPI.Forecast.get_daily_weather
 
     def test_23(self):
         pass
