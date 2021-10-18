@@ -193,42 +193,66 @@ class TestWeatherWebAPI:
         """
         assert WeatherWebAPI.Forecast
 
-    def test_can_use_default_api_weather_minute_21(self):
-        """
-            Работают ли парметры по умолчанию форма api для минутного прогноз на 1 час
-        """
-        assert WeatherWebAPI.Hourly.DEFAULT_API_FORECAST_MINUTE == DEFAULT_API_FORECAST_MINUTE
-    
-    def test_can_use_default_api_weather_hourly_22(self):
-        """
-            Работают ли парметры по умолчанию форма api для почасового прогноз на 1 час
-        """
-        assert WeatherWebAPI.Hourly.DEFAULT_API_FORECAST_HOURLY == DEFAULT_API_FORECAST_HOURLY
 
-    def test_can_use_default_api_weather_hourly_23(self):
-        
+
+    def test_can_use_default_api_weather_forecast_21(self):
+        """
+            Могу я использовать параметры по умолчанию из этого класса
+        """
+        assert WeatherWebAPI.Forecast.DEFAULT_API_FORECAST_MINUTE == DEFAULT_API_FORECAST_MINUTE
+        assert WeatherWebAPI.Forecast.DEFAULT_API_FORECAST_HOURLY == DEFAULT_API_FORECAST_HOURLY
+        assert WeatherWebAPI.Forecast.DEFAULT_API_FORECAST_DAILY == DEFAULT_API_FORECAST_DAILY
+
     
-    def test_can_use_method_get_minute_weather_ (self):
+    def test_can_use_method_get_minute_weather_22(self):
         """
             Я могу использовать метод get_minute_weather
         """
         assert WeatherWebAPI.Forecast.get_minute_weather
     
-    def test_can_use_method_get_hourly_weather_ (self):
+    def test_can_use_method_get_hourly_weather_23(self):
         """
             Я могу использовать метод get_hourly_weather
         """
         assert WeatherWebAPI.Forecast.get_hourly_weather
     
-    def test_can_use_method_get_daily_weather_23(self):
+    def test_can_use_method_get_daily_weather_24(self):
         """
             Я могу использовать метод get_daily_weather
         """
         assert WeatherWebAPI.Forecast.get_daily_weather
 
-    def test_23(self):
-        pass
-    
+    def test_how_work_method_get_minute_weather_25(self):
+        """
+            Как работает метод get_minute_weather
+        """
+        name = 'Minsk'
+        city = WeatherWebAPI.City(name=name, api_key=DEFAULT_API_KEY)
+        result = WeatherWebAPI.get_minute_weather(city=city, api_key=DEFAULT_API_KEY)
+        assert 'minutely' in result.keys()
+        assert result['lat'], result['lon'] == city.lat_lon
+
+    def test_how_work_method_get_hourly_weather(self):
+        """
+            Как рабоатет метод get_hourly_weather
+        """
+        name = 'Minsk'
+        city = WeatherWebAPI.City(name=name, api_key=DEFAULT_API_KEY)
+        result = WeatherWebAPI.get_hourly_weather(city=city, api_key=DEFAULT_API_KEY)
+        assert 'hourly' in result.keys()
+        assert result['lat'], result['lon'] == city.lat_lon
+
+
+    def test_how_work_method_get_daily_weather(self):
+        """
+            Как рабоатет метод get_daily_weather
+        """
+        name = 'Minsk'
+        city = WeatherWebAPI.City(name=name, api_key=DEFAULT_API_KEY)
+        result = WeatherWebAPI.get_minute_weather(city=city, api_key=DEFAULT_API_KEY)
+        assert 'daily' in result.keys()
+        assert result['lat'], result['lon'] == city.lat_lon
+
 class TestWeatherDB:
     pass
 
