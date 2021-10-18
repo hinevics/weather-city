@@ -2,38 +2,16 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import random
-
+import WeatherAPI as wa
 DEFAULT_CITY_NAME = 'London'
 
 dataCurrent1 = [1, 2, 3, 4]
 dataHistorycal1 = [4, 3, 2, 1]
 
-class WeatherAPI:
-    @classmethod
-    def get_current(cls, city:str):
-        if city == 'London':
-            return [(0.8**i)**i for i in dataCurrent1]
-        elif city == 'Minsk':
-            return [10**(-i) for i in dataCurrent1]
-    
-    @classmethod
-    def get_historycal(cls, city:str):
-        if city == 'London':
-            return [2**i for i in dataCurrent1]
-        elif city == 'Minsk':
-            return [i**10 for i in dataCurrent1]
-    
-    @classmethod
-    def get_forecast(cls, city:str):
-        if city == 'London':
-            return [(-1022)**i for i in dataCurrent1]
-        elif city == 'Minsk':
-            return [10**i for i in dataCurrent1]
-
 dict_test = {
-    'Current':lambda city: WeatherAPI.get_current(city=city), 
-    'Historycal': lambda city: WeatherAPI.get_historycal(city=city),
-    'Forecast': lambda city: WeatherAPI.get_forecast(city=city),
+    'Current':lambda city, api_key: wa.get_current(city=city, api_key=api_key), 
+    'Historycal': lambda city, api_key: wa.get_historycal(city=city, api_key=api_key),
+    'Forecast': lambda city, api_key: wa.get_forecast(city=city, api_key=api_key),
     }
 
 # dict_test = {
@@ -43,17 +21,18 @@ dict_test = {
 #     }
 
 option = st.sidebar.text_input(label='Write the city whose data you want to see:', value=DEFAULT_CITY_NAME)
+api_key = st.sidebar.text_input(label='Enter the api key:')
 
 st.title('Weather data')
 'You selected:', option
 
-state = st.selectbox('How would you like to be contacted?',
+state = st.selectbox('What kind of data do you want to see??',
                       ('Current', 'Historycal', 'Forecast'))
 
 st.write('You selected:', state)
-
-st.line_chart(data=dict_test[state](city=option))
+dt = dict_test[state](city=option, api_key=api_key)
+# st.line_chart(data=dict_test[state](city=option))
 col1, col2 = st.columns(2)
-col1.metric(label='Mode', value='{}'.format(np.mean(dict_test[state](city=option))))
-col2.metric(label='Max', value='{}'.format(np.max(dict_test[state](city=option))))
-
+col1.metric(label='temp', value='{}'.format(np.mean(dt['temp'])))
+col2.metric(label='pressure', value='{}'.format(np.max(dt['pressure'])))
+st.image(image=dt['weather_icon'])
