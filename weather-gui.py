@@ -19,5 +19,5 @@ dict_test = {
 'You selected:', option
 
 st.line_chart(data=dict_test[option])
-# st.metric()
-st.metric(label="Temperature", value="70 °F", delta="1.2 °F")
+col1, col2 = st.columns(2)
+col1.metric('Mode', '{}'.format(np.mean(dict_test[op])))
