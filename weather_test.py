@@ -233,7 +233,7 @@ class TestWeatherWebAPI:
         assert 'minutely' in result.keys()
         assert result['lat'], result['lon'] == city.lat_lon
 
-    def test_how_work_method_get_hourly_weather(self):
+    def test_how_work_method_get_hourly_weather_26(self):
         """
             Как рабоатет метод get_hourly_weather
         """
@@ -244,7 +244,7 @@ class TestWeatherWebAPI:
         assert result['lat'], result['lon'] == city.lat_lon
 
 
-    def test_how_work_method_get_daily_weather(self):
+    def test_how_work_method_get_daily_weather_27(self):
         """
             Как рабоатет метод get_daily_weather
         """
