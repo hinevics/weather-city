@@ -148,23 +148,59 @@ class Current:
 
 class Forecast:
     """
-    данные предсказания
+        Это нужно переделать. добавить возможность принимать параметр который поределяет какие именно нужны данные а не делать запросы с разных методов.
     """
     DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&appid={api_key}'
-    DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&appid={api_key}'
-    DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current, minutely,hourly,alerts&appid={api_key}'
+    DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,daily,alerts&appid={api_key}'
+    DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,hourly,alerts&appid={api_key}'
 
     @classmethod
     def get_minute_weather(cls, city:City, api_key:str):
-        pass
+        """
+            ...description...
+        """
+        lat, lon = city.lat_lon
+        str_request = Forecast.DEFAULT_API_FORECAST_MINUTE.format(lat=lat, lon=lon, api_key=api_key)
+        answer = requests.get(url=str_request)
+        if answer.status_code == 200:
+            print('I love you! ❤️❤️❤️')
+            return answer.json()
+        else:
+            print(answer.status_code)
+            for key in answer.headers.keys():
+                print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
     @classmethod
-    def get_hourly_weather(cls, ):
-        pass
+    def get_hourly_weather(cls, city:City, api_key:str):
+        """
+            ...description...
+        """
+        lat, lon = city.lat_lon
+        str_request = Forecast.DEFAULT_API_FORECAST_HOURLY.format(lat=lat, lon=lon, api_key=api_key)
+        answer = requests.get(url=str_request)
+        if answer.status_code == 200:
+            print('I love you! ❤️❤️❤️')
+            return answer.json()
+        else:
+            print(answer.status_code)
+            for key in answer.headers.keys():
+                print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
     @classmethod
-    def get_daily_weather(cls, ):
-        pass
+    def get_daily_weather(cls, city:City, api_key:str):
+        """
+            ...description...
+        """
+        lat, lon = city.lat_lon
+        str_request = Forecast.DEFAULT_API_FORECAST_DAILY.format(lat=lat, lon=lon, api_key=api_key)
+        answer = requests.get(url=str_request)
+        if answer.status_code == 200:
+            print('I love you! ❤️❤️❤️')
+            return answer.json()
+        else:
+            print(answer.status_code)
+            for key in answer.headers.keys():
+                print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
     
 
 def main():
