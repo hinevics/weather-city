@@ -115,7 +115,6 @@ class Historical:
         str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
-            print('I love you! ❤️❤️❤️')
             return answer.json()
         else:
             print(answer.status_code)
@@ -127,7 +126,7 @@ class Current:
     """
         ...description...
     """
-    DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
+    DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&units=metric&appid={api_key}'
     @classmethod
     def get_weather(cls, city:City, api_key:str):
         """
@@ -137,7 +136,6 @@ class Current:
         str_request = Current.DEFAULT_API_CURRENT.format(lat=lat, lon=lon, api_key=api_key)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
-            print('I love you! ❤️❤️❤️')
             return answer.json()
         else:
             print(answer.status_code)
@@ -150,9 +148,9 @@ class Forecast:
     """
         Это нужно переделать. добавить возможность принимать параметр который поределяет какие именно нужны данные а не делать запросы с разных методов.
     """
-    DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&appid={api_key}'
-    DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,daily,alerts&appid={api_key}'
-    DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,hourly,alerts&appid={api_key}'
+    DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&units=metric&appid={api_key}'
+    DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,daily,alerts&units=metric&appid={api_key}'
+    DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,hourly,alerts&units=metric&appid={api_key}'
 
     @classmethod
     def get_minute_weather(cls, city:City, api_key:str):
@@ -163,7 +161,6 @@ class Forecast:
         str_request = Forecast.DEFAULT_API_FORECAST_MINUTE.format(lat=lat, lon=lon, api_key=api_key)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
-            print('I love you! ❤️❤️❤️')
             return answer.json()
         else:
             print(answer.status_code)
@@ -179,7 +176,6 @@ class Forecast:
         str_request = Forecast.DEFAULT_API_FORECAST_HOURLY.format(lat=lat, lon=lon, api_key=api_key)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
-            print('I love you! ❤️❤️❤️')
             return answer.json()
         else:
             print(answer.status_code)
@@ -195,7 +191,6 @@ class Forecast:
         str_request = Forecast.DEFAULT_API_FORECAST_DAILY.format(lat=lat, lon=lon, api_key=api_key)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
-            print('I love you! ❤️❤️❤️')
             return answer.json()
         else:
             print(answer.status_code)
