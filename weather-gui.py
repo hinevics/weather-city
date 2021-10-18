@@ -20,4 +20,5 @@ dict_test = {
 
 st.line_chart(data=dict_test[option])
 col1, col2 = st.columns(2)
-col1.metric('Mode', '{}'.format(np.mean(dict_test[op])))
+col1.metric('Mode', '{}'.format(np.mean(dict_test[option])))
+col2.metric('Max','{}'.format(np.max(dict_test[option])))
