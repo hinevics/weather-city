@@ -150,10 +150,20 @@ class Forecast:
     """
     данные предсказания
     """
-    DEFAULT_API_FORECAST = r''
+    DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&appid={api_key}'
+    DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&appid={api_key}'
+    DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current, minutely,hourly,alerts&appid={api_key}'
 
     @classmethod
-    def get_minute_weather(cls,):
+    def get_minute_weather(cls, city:City, api_key:str):
+        pass
+
+    @classmethod
+    def get_hourly_weather(cls, ):
+        pass
+
+    @classmethod
+    def get_daily_weather(cls, ):
         pass
     
 
