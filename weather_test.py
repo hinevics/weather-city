@@ -13,8 +13,9 @@ DEFAULT_LON_LAT = (53.9, 27.5667)
 DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
 DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
 DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&appid={api_key}'
-DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
-DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current, minutely,hourly,alerts&appid={api_key}'
+DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,daily,alerts&appid={api_key}'
+DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,hourly,alerts&appid={api_key}'
+
 
 class TestWeatherWebAPI:
     
@@ -148,7 +149,7 @@ class TestWeatherWebAPI:
         """
             How the Historical get_weather class method works when the time is passed to it 
         """
-        test_time = '9.10.2021'
+        test_time = '17.10.2021'
         test_unix_time = WeatherWebAPI.DateTime.create_unix(utctime=test_time)
         test_city = WeatherWebAPI.City(name='London', api_key=DEFAULT_API_KEY)
         date_query_unix = WeatherWebAPI.Historical.get_weather(city=test_city, api_key=DEFAULT_API_KEY, dt=test_unix_time)['current']['dt']
@@ -228,7 +229,7 @@ class TestWeatherWebAPI:
         """
         name = 'Minsk'
         city = WeatherWebAPI.City(name=name, api_key=DEFAULT_API_KEY)
-        result = WeatherWebAPI.get_minute_weather(city=city, api_key=DEFAULT_API_KEY)
+        result = WeatherWebAPI.Forecast.get_minute_weather(city=city, api_key=DEFAULT_API_KEY)
         assert 'minutely' in result.keys()
         assert result['lat'], result['lon'] == city.lat_lon
 
@@ -238,7 +239,7 @@ class TestWeatherWebAPI:
         """
         name = 'Minsk'
         city = WeatherWebAPI.City(name=name, api_key=DEFAULT_API_KEY)
-        result = WeatherWebAPI.get_hourly_weather(city=city, api_key=DEFAULT_API_KEY)
+        result = WeatherWebAPI.Forecast.get_hourly_weather(city=city, api_key=DEFAULT_API_KEY)
         assert 'hourly' in result.keys()
         assert result['lat'], result['lon'] == city.lat_lon
 
@@ -249,7 +250,7 @@ class TestWeatherWebAPI:
         """
         name = 'Minsk'
         city = WeatherWebAPI.City(name=name, api_key=DEFAULT_API_KEY)
-        result = WeatherWebAPI.get_minute_weather(city=city, api_key=DEFAULT_API_KEY)
+        result = WeatherWebAPI.Forecast.get_daily_weather(city=city, api_key=DEFAULT_API_KEY)
         assert 'daily' in result.keys()
         assert result['lat'], result['lon'] == city.lat_lon
 
