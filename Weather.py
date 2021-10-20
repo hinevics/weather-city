@@ -9,10 +9,10 @@ def get_current(city:str, api_key:str):
     current_weather = WeatherWebAPI.Current.get_weather(city=city, api_key=api_key)
     return {
         'dt': {'values':WeatherWebAPI.DateTime.create_utc(current_weather['current']['dt']),
-                'description':''},
+                'description':'Current time'},
         'temp': {
             'values':current_weather['current']['temp'],
-            'description': ''},
+            'description': 'Celsius'},
         'pressure':{
             'values':current_weather['current']['pressure'],
             'description': ''},
@@ -41,14 +41,15 @@ def get_current(city:str, api_key:str):
             'values':current_weather['current']['wind_gust'],
             "description":""},
         'weather_icon': {
-            'values':r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon'])},
-            'description':""}
+                        'values':r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon']),
+            'description':""}}
 
 # def get_his
 
 def main():
-    get_current(city='Minsk', api_key=WeatherWebAPI.DEFAULT_API_KEY)
-    print('Ok!')
+    a = get_current(city='Minsk', api_key=WeatherWebAPI.DEFAULT_API_KEY)
+    for i in a.keys():
+        print(a[i].values())
 
 
 if __name__ == '__main__':

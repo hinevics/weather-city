@@ -292,9 +292,9 @@ class TestWeather:
 
     def test_get_current_temp_description_36(self):
         result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
-        assert result['dt']['description'] == 'Celsius'
+        assert result['temp']['description'] == 'Celsius'
 
-    def test_get_current_values(self):
+    def test_get_current_values_37(self):
         result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
         for k in result.keys():
             assert result[k].values() != {}.values()
