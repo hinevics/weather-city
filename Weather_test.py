@@ -3,6 +3,7 @@ from re import A, U, UNICODE
 from requests import api
 import pytest
 import WeatherWebAPI
+import Weather
 import datetime
 import time
  
@@ -11,11 +12,10 @@ DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (53.9, 27.5667)
 
 DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
-DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&appid={api_key}'
-DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&appid={api_key}'
-DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,daily,alerts&appid={api_key}'
-DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,hourly,alerts&appid={api_key}'
-
+DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&units=metric&appid={api_key}'
+DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,daily,alerts&units=metric&appid={api_key}'
+DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,hourly,alerts&units=metric&appid={api_key}'
+DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&units=metric&appid={api_key}'
 
 class TestWeatherWebAPI:
     
@@ -254,11 +254,23 @@ class TestWeatherWebAPI:
         assert 'daily' in result.keys()
         assert result['lat'], result['lon'] == city.lat_lon
 
+
+class TestWeather:
+    
+    def test_can_import_module_28(self):
+        assert Weather
+
+    def test_can_use_fuction_get_current(self):
+        assert Weather.get_current
+
+    def test_can_work_with_fuction(self):
+        result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
+        assert result.values()
+
 class TestWeatherDB:
     pass
 
-class TestWeatherAPP:
-    pass
+
 
 class TestWeatherGUI:
     pass
