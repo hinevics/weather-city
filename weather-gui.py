@@ -11,12 +11,16 @@ DEFAULT_CITY_NAME = 'London'
 api_key = st.sidebar.text_input(label='Enter the api key:', value='')
 
 def current(state:str, city:str, api_key:str):
-    data_request = Weather.get_current(city=city, api_key=api_key)
     st.write('You selected:', state)
-    col1, col2 = st.columns(2)
-    col1.metric(label='temp', value='{}'.format(data_request['temp']))
-    col2.metric(label='pressure', value='{}'.format(data_request['pressure']))
-    st.image(image=data_request['weather_icon'])
+    data_request = Weather.get_current(city=city, api_key=api_key)
+    # line 1
+    col1, col2, col3 = st.columns(3)
+    
+    col1.image(image=data_request['weather_icon']['values'], caption='{}'.format(data_request['weather_icon']['description']))
+    col2.metric(label='temp', value='{}'.format(data_request['temp']['values']),
+                delta='{}{} {}'.format('-' if data_request['temp_feels_like']['values']<data_request['temp']['values'] else '+', data_request['temp_feels_like']['values'],
+    data_request['temp_feels_like']['description']))
+    col3.metric(label='pressure', value='{}'.format(data_request['pressure']['values']))
 
 def historycal(state:str, city:str, api_key:str):
     st.write('You selected:', state)
@@ -24,6 +28,7 @@ def historycal(state:str, city:str, api_key:str):
     data_test1 = [random.random() for i in range(50)]
     st.line_chart(data=data_test1)
     # columns1
+    
     col1, col2 = st.columns(2)
     col1.metric(label='temp', value='{}'.format(np.mean(data_test1)))
     col2.metric(label='pressure', value='{}'.format(np.max(data_test1)))

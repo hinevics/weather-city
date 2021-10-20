@@ -42,7 +42,8 @@ def get_current(city:str, api_key:str):
             "description":""},
         'weather_icon': {
                         'values':r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon']),
-            'description':""}}
+            'description':"{}".format(current_weather['current']['weather'][0]['description'])},
+        'temp_feels_like':{'values': current_weather['current']['feels_like'], 'description':'Celsius'}}
 
 # def get_his
 
