@@ -8,17 +8,18 @@ def get_current(city:str, api_key:str):
     city = WeatherWebAPI.City(name=city, api_key=api_key)
     current_weather = WeatherWebAPI.Current.get_weather(city=city, api_key=api_key)
     return {
-        'dt':current_weather['current']['dt'],
+        'dt': {'values':WeatherWebAPI.DateTime.create_utc(current_weather['current']['dt']),
+                'description':''},
         'temp':current_weather['current']['temp'],
         'pressure':current_weather['current']['pressure'],
-        'humidity': 80,
-        'dew_point': -1.94,
-        'uvi': 1.25,
-        'clouds': 6,
-        'visibility': 10000,
-        'wind_speed': 3.77, 
-        'wind_deg': 290,
-        'wind_gust': 9.76, 
+        'humidity': current_weather['current']['humidity'],
+        'dew_point': current_weather['current']['dew_point'],
+        'uvi': current_weather['current']['uvi'],
+        'clouds': current_weather['current']['clouds'],
+        'visibility': current_weather['current']['visibility'],
+        'wind_speed': current_weather['current']['wind_speed'], 
+        'wind_deg': current_weather['current']['wind_deg'],
+        'wind_gust': current_weather['current']['wind_gust'], 
         'weather_icon': r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon'])
         }
 

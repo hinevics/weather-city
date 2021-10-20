@@ -1,4 +1,5 @@
 from re import A, U, UNICODE
+import re
 
 from requests import api
 import pytest
@@ -260,12 +261,39 @@ class TestWeather:
     def test_can_import_module_28(self):
         assert Weather
 
-    def test_can_use_fuction_get_current(self):
+    def test_can_use_fuction_get_current_29(self):
         assert Weather.get_current
 
-    def test_can_work_with_fuction(self):
+    def test_can_work_with_fuction_30(self):
         result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
         assert result.values()
+    
+    def test_utc_time_in_return_31(self):
+        result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
+        assert  'dt' in result.keys()
+    
+    def test_utc_time_in_return_32(self):
+        result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
+        assert not(result['dt'].values() == {}.values())
+
+    def test_utc_time_in_return_33(self):
+        result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
+        utcdatetime = time.localtime(time.mktime(datetime.date.today().timetuple()))
+        time_now = '{d}.{m}.{Y}'.format(d=utcdatetime.tm_mday, m=utcdatetime.tm_mon, Y=utcdatetime.tm_year)
+        assert  result['dt']['values'] == time_now
+    
+    def test_get_current_dt_descrition_34(self):
+        result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
+        assert result['dt']['description'] == 'Current time'
+
+    def test_get_current_temp_values_35(self):
+        result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
+        assert result['temp'].values() != {}.values()
+
+    def test_get_current_temp_description_36(self):
+        result = Weather.get_current(city='Minsk', api_key=DEFAULT_API_KEY)
+        assert result['dt']['description'] == 'Celsius'
+
 
 class TestWeatherDB:
     pass
