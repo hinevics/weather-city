@@ -9,16 +9,24 @@ def get_current(city:str, api_key:str):
     current_weather = WeatherWebAPI.Current.get_weather(city=city, api_key=api_key)
     return {
         'dt': {'values':WeatherWebAPI.DateTime.create_utc(current_weather['current']['dt']),
+                '':'',
                 'description':'Current time'},
         'temp': {
             'values':current_weather['current']['temp'],
-            'description': 'Celsius'},
+            'units':'°C',
+            'description': 'Temperature'},
+        'temp_feels_like':{
+            'values': current_weather['current']['feels_like'],
+            'units':'°C',
+            'description':'Celsius'},
         'pressure':{
             'values':current_weather['current']['pressure'],
-            'description': ''},
+            'units':'hPa',
+            'description': 'Atmospheric pressure on the sea level'},
         'humidity': {
             'values':current_weather['current']['humidity'],
-            'description':''},
+            'units':'%',
+            'description':'Humidity'},
         'dew_point':{
             'values': current_weather['current']['dew_point'],
             'description':''},
@@ -42,8 +50,7 @@ def get_current(city:str, api_key:str):
             "description":""},
         'weather_icon': {
                         'values':r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon']),
-            'description':"{}".format(current_weather['current']['weather'][0]['description'])},
-        'temp_feels_like':{'values': current_weather['current']['feels_like'], 'description':'Celsius'}}
+            'description':"{}".format(current_weather['current']['weather'][0]['description'])}}
 
 # def get_his
 
