@@ -13,15 +13,27 @@ api_key = st.sidebar.text_input(label='Enter the api key:', value='')
 def current(state:str, city:str, api_key:str):
     data_request = wa.get_current(city=city, api_key=api_key)
     st.write('You selected:', state)
-    # st.line_chart(data=dict_test[state](city=option))
     col1, col2 = st.columns(2)
-    col1.metric(label='temp', value='{}'.format(np.mean(data_request['temp'])))
-    col2.metric(label='pressure', value='{}'.format(np.max(data_request['pressure'])))
+    col1.metric(label='temp', value='{}'.format(data_request['temp']))
+    col2.metric(label='pressure', value='{}'.format(data_request['pressure']))
     st.image(image=data_request['weather_icon'])
 
-def historycal(city:str, api_key:str):
-    return wa.get_current(city=city, api_key=api_key)
+def historycal(state:str, city:str, api_key:str):
+    st.write('You selected:', state)
 
+    data_test1 = [random.random() for i in range(50)]
+    st.line_chart(data=data_test1)
+    # columns1
+    col1, col2 = st.columns(2)
+    col1.metric(label='temp', value='{}'.format(np.mean(data_test1)))
+    col2.metric(label='pressure', value='{}'.format(np.max(data_test1)))
+    # 2
+    data_test2 = [random.random() for i in range(50)]
+    st.line_chart(data=data_test2)
+    # columns1
+    col1, col2 = st.columns(2)
+    col1.metric(label='temp', value='{}'.format(np.mean(data_test2)))
+    col2.metric(label='pressure', value='{}'.format(np.max(data_test2)))
 
 def forecast(city:str, api_key:str):
     return wa.get_current(city=city, api_key=api_key)
@@ -40,8 +52,8 @@ else:
                         ('Current', 'Historycal', 'Forecast'))
     if state == "Current":
         current(state=state, city=input_city, api_key=api_key)
-    elif state == 'historycal':
-        historycal(city=input_city, api_key=api_key)
+    elif state == 'Historycal':
+        historycal(state=state, city=input_city, api_key=api_key)
     elif state == "Forecast":
         forecast(city=input_city, api_key=api_key)
     
