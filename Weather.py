@@ -10,18 +10,39 @@ def get_current(city:str, api_key:str):
     return {
         'dt': {'values':WeatherWebAPI.DateTime.create_utc(current_weather['current']['dt']),
                 'description':''},
-        'temp':current_weather['current']['temp'],
-        'pressure':current_weather['current']['pressure'],
-        'humidity': current_weather['current']['humidity'],
-        'dew_point': current_weather['current']['dew_point'],
-        'uvi': current_weather['current']['uvi'],
-        'clouds': current_weather['current']['clouds'],
-        'visibility': current_weather['current']['visibility'],
-        'wind_speed': current_weather['current']['wind_speed'], 
-        'wind_deg': current_weather['current']['wind_deg'],
-        'wind_gust': current_weather['current']['wind_gust'], 
-        'weather_icon': r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon'])
-        }
+        'temp': {
+            'values':current_weather['current']['temp'],
+            'description': ''},
+        'pressure':{
+            'values':current_weather['current']['pressure'],
+            'description': ''},
+        'humidity': {
+            'values':current_weather['current']['humidity'],
+            'description':''},
+        'dew_point':{
+            'values': current_weather['current']['dew_point'],
+            'description':''},
+        'uvi': {
+            'values':current_weather['current']['uvi'],
+            'description':''},
+        'clouds': {
+            'values':current_weather['current']['clouds'],
+            "description":""},
+        'visibility': {
+            'values':current_weather['current']['visibility'],
+            'description':''},
+        'wind_speed': {
+            'values':current_weather['current']['wind_speed'],
+            'description':''},
+        'wind_deg': {
+            'values':current_weather['current']['wind_deg'],
+            'description':''},
+        'wind_gust': {
+            'values':current_weather['current']['wind_gust'],
+            "description":""},
+        'weather_icon': {
+            'values':r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon'])},
+            'description':""}
 
 # def get_his
 
