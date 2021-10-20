@@ -4,7 +4,7 @@ import os
 
 
 
-def get_current(city:str, api_key:str):
+def get_current(city:str, api_key:str) -> dict:
     city = WeatherWebAPI.City(name=city, api_key=api_key)
     current_weather = WeatherWebAPI.Current.get_weather(city=city, api_key=api_key)
     return {
@@ -72,8 +72,12 @@ def get_current(city:str, api_key:str):
         'rain': {
             'values':current_weather['current']['rain']['1h'],
             'units':'mm',
-            'description':'Rain volume for last hour'} if (
-                'rain' in current_weather['current'] and '1h' in current_weather['current']['rain']) else None,
+            'description':'Rain volume for last hour'}
+                if (
+                    'rain' in current_weather['current'] and
+                    '1h' in current_weather['current']['rain'] and
+                    'description' in current_weather['current']['rain'])
+                else None,
         
         'snow': {
             'values':current_weather['current']['snow']['1h'],
@@ -84,7 +88,7 @@ def get_current(city:str, api_key:str):
         'weather': {
             'icon':r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon'])
                 if 'icon' in current_weather['current']['weather'][0] else None,
-            'group': current_weather['current']['weather']['main'] if 'main' in current_weather['current']['weather'][0] else None, 
+            'group': current_weather['current']['weather'][0]['main'] if 'main' in current_weather['current']['weather'][0] else None, 
             'description':"{}".format(current_weather['current']['weather'][0]['description'])
                 if 'description' in current_weather['current']['weather'][0] else None}
             if 'weather' in current_weather['current'] else None

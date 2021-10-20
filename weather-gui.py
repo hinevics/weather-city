@@ -14,26 +14,28 @@ def current(state:str, city:str, api_key:str):
     st.write('You selected:', state)
     data_request = Weather.get_current(city=city, api_key=api_key)
     # line 1
-    col1, col2, col3 = st.columns(3)
-    # Придумать как сделать это автоматически !!!
-    col1.image(
-        image=data_request['weather_icon']['values'],
-        caption='{}'.format(data_request['weather_icon']['description']))
-    col2.metric(
-        label=data_request['temp']['description'],
-        value='{values}, {units}'.format(
-            values=data_request['temp']['values'],
-            units=data_request['temp']['units']),
-            delta='{delta}{values}, {units}'.format(
-                delta='-' if data_request['temp_feels_like']['values']<data_request['temp']['values'] else '+',
-                values=data_request['temp_feels_like']['values'],
-                units=data_request['temp_feels_like']['units']))
-    
-    col3.metric(
-        label=data_request['pressure']['description'],
-        value='{values}, {units}'.format(
-            values=data_request['pressure']['values'],
-            units=data_request['pressure']['units']))
+    # cols = st.columns(3)
+    st.text(body='{}'.format(len(data_request.keys())))
+    # for col in cols:
+    # # Придумать как сделать это автоматически !!!
+    #     col.image(
+    #         image=data_request['weather']['icon'],
+    #         caption='{}'.format(data_request['weather']['description']))
+    #     col.metric(
+    #         label=data_request['temp']['description'],
+    #         value='{values}, {units}'.format(
+    #             values=data_request['temp']['values'],
+    #             units=data_request['temp']['units']),
+    #             delta='{delta}{values}, {units}'.format(
+    #                 delta='-' if data_request['temp_feels_like']['values']<data_request['temp']['values'] else '+',
+    #                 values=data_request['temp_feels_like']['values'],
+    #                 units=data_request['temp_feels_like']['units']))
+        
+    #     col.metric(
+    #         label=data_request['pressure']['description'],
+    #         value='{values}, {units}'.format(
+    #             values=data_request['pressure']['values'],
+    #             units=data_request['pressure']['units']))
 
 def historycal(state:str, city:str, api_key:str):
     st.write('You selected:', state)
