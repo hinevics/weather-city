@@ -22,6 +22,8 @@ def get_current(city:str, api_key:str):
         'weather_icon': r'http://openweathermap.org/img/wn/{icon}.png'.format(icon=current_weather['current']['weather'][0]['icon'])
         }
 
+def get_his
+
 def main():
     get_current(city='Minsk', api_key=WeatherWebAPI.DEFAULT_API_KEY)
     print('Ok!')

@@ -4,14 +4,14 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import random
-import WeatherAPI as wa
+import Weather
 DEFAULT_CITY_NAME = 'London'
 
 # если api_key не введен, то выводится тект о том что api не доступно
 api_key = st.sidebar.text_input(label='Enter the api key:', value='')
 
 def current(state:str, city:str, api_key:str):
-    data_request = wa.get_current(city=city, api_key=api_key)
+    data_request = Weather.get_current(city=city, api_key=api_key)
     st.write('You selected:', state)
     col1, col2 = st.columns(2)
     col1.metric(label='temp', value='{}'.format(data_request['temp']))
@@ -36,7 +36,7 @@ def historycal(state:str, city:str, api_key:str):
     col2.metric(label='pressure', value='{}'.format(np.max(data_test2)))
 
 def forecast(city:str, api_key:str):
-    return wa.get_current(city=city, api_key=api_key)
+    return Weather.get_current(city=city, api_key=api_key)
 
 
 if api_key == '':
