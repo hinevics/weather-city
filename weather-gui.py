@@ -36,17 +36,14 @@ def current(state:str, city:str, api_key:str):
             units=data_request['pressure']['units']))
     k = [i for i in data_request.keys() if not (i in ['pressure', 'temp', 'weather'])]
     for col in cols:
-        for i in range(len(k)):
-            # if i % len(k)/len(cols) == 0:
-            #     break
-            # print(st.text(k))
+        for i in range(len(k)//len(cols)):
             if data_request[k[i]] != None:
                 col.metric(
                     label=data_request[k[i]]['description'],
                     value='{value}, {units}'.format(
                         value=data_request[k[i]]['values'],
                         units=data_request[k[i]]['units']))
-            break
+            
 
             
 def historycal(state:str, city:str, api_key:str):
