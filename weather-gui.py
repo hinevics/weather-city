@@ -14,29 +14,41 @@ def current(state:str, city:str, api_key:str):
     st.write('You selected:', state)
     data_request = Weather.get_current(city=city, api_key=api_key)
     # line 1
-    # cols = st.columns(3)
-    st.text(body='{}'.format(len(data_request.keys())))
-    # for col in cols:
+    cols = st.columns(3)
     # # Придумать как сделать это автоматически !!!
-    #     col.image(
-    #         image=data_request['weather']['icon'],
-    #         caption='{}'.format(data_request['weather']['description']))
-    #     col.metric(
-    #         label=data_request['temp']['description'],
-    #         value='{values}, {units}'.format(
-    #             values=data_request['temp']['values'],
-    #             units=data_request['temp']['units']),
-    #             delta='{delta}{values}, {units}'.format(
-    #                 delta='-' if data_request['temp_feels_like']['values']<data_request['temp']['values'] else '+',
-    #                 values=data_request['temp_feels_like']['values'],
-    #                 units=data_request['temp_feels_like']['units']))
-        
-    #     col.metric(
-    #         label=data_request['pressure']['description'],
-    #         value='{values}, {units}'.format(
-    #             values=data_request['pressure']['values'],
-    #             units=data_request['pressure']['units']))
+    cols[0].image(
+        image=data_request['weather']['icon'],
+        caption='{}'.format(data_request['weather']['description']))
+    cols[1].metric(
+        label=data_request['temp']['description'],
+        value='{values}, {units}'.format(
+            values=data_request['temp']['values'],
+            units=data_request['temp']['units']),
+            delta='{delta}{values}, {units}'.format(
+                delta='-' if data_request['temp_feels_like']['values']<data_request['temp']['values'] else '+',
+                values=data_request['temp_feels_like']['values'],
+                units=data_request['temp_feels_like']['units']))
 
+    cols[2].metric(
+        label=data_request['pressure']['description'],
+        value='{values}, {units}'.format(
+            values=data_request['pressure']['values'],
+            units=data_request['pressure']['units']))
+    k = [i for i in data_request.keys() if not (i in ['pressure', 'temp', 'weather'])]
+    for col in cols:
+        for i in range(len(k)):
+            # if i % len(k)/len(cols) == 0:
+            #     break
+            # print(st.text(k))
+            if data_request[k[i]] != None:
+                col.metric(
+                    label=data_request[k[i]]['description'],
+                    value='{value}, {units}'.format(
+                        value=data_request[k[i]]['values'],
+                        units=data_request[k[i]]['units']))
+            break
+
+            
 def historycal(state:str, city:str, api_key:str):
     st.write('You selected:', state)
 

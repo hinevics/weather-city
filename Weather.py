@@ -10,7 +10,7 @@ def get_current(city:str, api_key:str) -> dict:
     return {
         
         'dt': {'values':WeatherWebAPI.DateTime.create_utc(current_weather['current']['dt']),
-                '':'',
+                'units':'',
                 'description':'Current time'},
         
         'temp': {
