@@ -48,21 +48,6 @@ def current(state:str, city:str, api_key:str):
                 value='{values} {units}'.format(
                 values=data_request[key]['values'],
                 units=data_request[key]['units']))
-
-    # a = [i for i in range(11)]
-    # st.text(a[0:3])
-    # st.text(a[3:6])
-    # st.text(a[9:12])
-    # for col in cols:
-    #     for i in range(len(k)//len(cols)):
-    #         if data_request[k[i]] != None:
-    #             col.metric(ы
-    #                 label=data_request[k[i]]['description'],
-    #                 value='{value}, {units}'.format(
-    #                     value=data_request[k[i]]['values'],
-    #                     units=data_request[k[i]]['units']))
-            
-
             
 def historycal(state:str, city:str, api_key:str):
     st.write('You selected:', state)

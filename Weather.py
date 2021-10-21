@@ -1,3 +1,4 @@
+from streamlit.elements.arrow import Data
 import WeatherWebAPI
 import re
 import os
@@ -93,14 +94,17 @@ def get_current(city:str, api_key:str) -> dict:
                 if 'description' in current_weather['current']['weather'][0] else None}
             if 'weather' in current_weather['current'] else None
         }
-
-# def get_his
-
+    
+def get_historycal(city:str, api_key:str, dt:str):
+    city = WeatherWebAPI.City(name=city, api_key=api_key)
+    dt = WeatherWebAPI.DateTime.create_unix(utctime=dt)
+    
+    current_weather = WeatherWebAPI.Historical.get_weather(city=city, api_key=api_key, dt=)
+    
+    return current_weather
+    
 def main():
-    a = get_current(city='Minsk', api_key=WeatherWebAPI.DEFAULT_API_KEY)
-    for i in a.keys():
-        print(a[i].values())
-
+    a = get_historycal(city='Minsk', api_key=WeatherWebAPI.DEFAULT_API_KEY)
 
 if __name__ == '__main__':
     main()
