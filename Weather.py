@@ -36,7 +36,7 @@ def get_current(city:str, api_key:str) -> dict:
         'dew_point':{
             'values': current_weather['current']['dew_point'],
             'units':'°C',
-            'description':''},
+            'description':'Atmospheric temperature'},
         
         'clouds':
             {
@@ -51,17 +51,17 @@ def get_current(city:str, api_key:str) -> dict:
         
         'visibility': {
             'values':current_weather['current']['visibility'],
-            'units':'metre',
+            'units':'m',
             'description':'Average visibility'},
         
         'wind_speed': {
             'values':current_weather['current']['wind_speed'],
-            'units':'metre/sec',
+            'units':'m/sec',
             'description':'Wind speed'},
         
         'wind_gust': {
             'values':current_weather['current']['wind_gust'],
-            'units':'metre/sec',
+            'units':'m/sec',
             'description':'Wind gust'} if 'wind_gust' in current_weather['current'] else None,
         
         'wind_deg': {

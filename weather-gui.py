@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import random
 import Weather
+from math import ceil
 DEFAULT_CITY_NAME = 'London'
 
 # если api_key не введен, то выводится тект о том что api не доступно
@@ -14,6 +15,7 @@ def current(state:str, city:str, api_key:str):
     st.write('You selected:', state)
     data_request = Weather.get_current(city=city, api_key=api_key)
     # line 1
+    st.subheader(data_request['weather']['group'])
     cols = st.columns(3)
     # # Придумать как сделать это автоматически !!!
     cols[0].image(
@@ -21,28 +23,44 @@ def current(state:str, city:str, api_key:str):
         caption='{}'.format(data_request['weather']['description']))
     cols[1].metric(
         label=data_request['temp']['description'],
-        value='{values}, {units}'.format(
+        value='{values} {units}'.format(
             values=data_request['temp']['values'],
             units=data_request['temp']['units']),
-            delta='{delta}{values}, {units}'.format(
+            delta='{delta}{values} {units}'.format(
                 delta='-' if data_request['temp_feels_like']['values']<data_request['temp']['values'] else '+',
                 values=data_request['temp_feels_like']['values'],
                 units=data_request['temp_feels_like']['units']))
 
     cols[2].metric(
         label=data_request['pressure']['description'],
-        value='{values}, {units}'.format(
+        value='{values} {units}'.format(
             values=data_request['pressure']['values'],
             units=data_request['pressure']['units']))
-    k = [i for i in data_request.keys() if not (i in ['pressure', 'temp', 'weather'])]
-    for col in cols:
-        for i in range(len(k)//len(cols)):
-            if data_request[k[i]] != None:
-                col.metric(
-                    label=data_request[k[i]]['description'],
-                    value='{value}, {units}'.format(
-                        value=data_request[k[i]]['values'],
-                        units=data_request[k[i]]['units']))
+    
+    # Убираю лишнее из результата
+    k = [i for i in data_request.keys() if (not (i in ['pressure', 'temp', 'weather']) and data_request[i] != None) ]
+    for i in range(ceil(len(k)/3)):
+        keys =  k[i*3:i*3+3]
+        cols = st.columns(len(keys))
+        for col, key in zip(cols, keys):
+            col.metric(
+                label=data_request[key]['description'],
+                value='{values} {units}'.format(
+                values=data_request[key]['values'],
+                units=data_request[key]['units']))
+
+    # a = [i for i in range(11)]
+    # st.text(a[0:3])
+    # st.text(a[3:6])
+    # st.text(a[9:12])
+    # for col in cols:
+    #     for i in range(len(k)//len(cols)):
+    #         if data_request[k[i]] != None:
+    #             col.metric(ы
+    #                 label=data_request[k[i]]['description'],
+    #                 value='{value}, {units}'.format(
+    #                     value=data_request[k[i]]['values'],
+    #                     units=data_request[k[i]]['units']))
             
 
             
