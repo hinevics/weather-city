@@ -3,8 +3,6 @@ import WeatherWebAPI
 import re
 import os
 
-
-
 def get_current(city:str, api_key:str) -> dict:
     city = WeatherWebAPI.City(name=city, api_key=api_key)
     current_weather = WeatherWebAPI.Current.get_weather(city=city, api_key=api_key)
@@ -99,9 +97,9 @@ def get_historycal(city:str, api_key:str, dt:str):
     city = WeatherWebAPI.City(name=city, api_key=api_key)
     dt = WeatherWebAPI.DateTime.create_unix(utctime=dt)
     
-    current_weather = WeatherWebAPI.Historical.get_weather(city=city, api_key=api_key, dt=)
+    # current_weather = WeatherWebAPI.Historical.get_weather(city=city, api_key=api_key, dt=)
     
-    return current_weather
+    # return current_weather
     
 def main():
     a = get_historycal(city='Minsk', api_key=WeatherWebAPI.DEFAULT_API_KEY)
