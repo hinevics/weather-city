@@ -12,13 +12,10 @@ import requests
 import csv
 import datetime
 
+from config import DEFAULT_API_WEATHER_HISTORY, DEFAULT_API_KEY, DEFAULT_API_WEATHER, DEFAULT_API_CITY
+
 DEFAULT_PATH_SAVE_FILE = r'..'
 DEFAULT_CITY = r'London'
-DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
-DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
-DEFAULT_API_KEY = input('Enter the access key: ')
-DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&lang=ru&dt={time}&appid={api_key}'
-
 
 # DEFAULT_PARAMETER_DESCRIPTION = {
 #     'current': {
@@ -26,7 +23,8 @@ DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/
 #         'sunrise': 'Sunrise time: {value}',
 #         'sunset': 'Sunset time: {value}',
 #         'temp': 'Temperature: {value}, ℃',
-#         'feels_like': 'Temperature. This temperature parameter accounts for the human perception of weather: {value}, ℃',
+#         'feels_like': 'Temperature. This temperature parameter accounts\
+#               for the human perception of weather: {value}, ℃',
 #         'pressure': ' Atmospheric pressure on the sea level: {value}, hPa',
 #         'humidity': 'Humidity: {value}, %',
 #         'dew_point': 'Atmospheric temperature: {value}, Celsius',
