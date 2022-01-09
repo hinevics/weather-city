@@ -1,7 +1,7 @@
 import datetime
 import time
 
-import pytest
+# import pytest
 
 from config import DEFAULT_API_HISTORY, DEFAULT_API_FORECAST_MINUTE,\
     DEFAULT_API_FORECAST_HOURLY, DEFAULT_API_FORECAST_DAILY, DEFAULT_API_CURRENT, DEFAULT_API_KEY
