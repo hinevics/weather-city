@@ -2,12 +2,14 @@
 # import re
 # import os
 
-import WeatherWebAPI
+import old.WeatherWebAPI as WeatherWebAPI
 
 
 def get_current(city: str, api_key: str) -> dict:
     city = WeatherWebAPI.City(name=city, api_key=api_key)
     current_weather = WeatherWebAPI.Current.get_weather(city=city, api_key=api_key)
+    print(current_weather)
+    print(WeatherWebAPI.DateTime.create_utc(current_weather['current']['dt']))
     return {
         'dt': {'values': WeatherWebAPI.DateTime.create_utc(current_weather['current']['dt']),
                'units': '',
@@ -94,7 +96,7 @@ def get_historycal(city: str, api_key: str, dt: str):
 
 
 def main():
-    # a = get_historycal(city='Minsk', api_key=WeatherWebAPI.DEFAULT_API_KEY)
+    a = get_current(city='Minsk', api_key=r'8864601f4ae98b4994aa53941f6bc733')
     pass
 
 

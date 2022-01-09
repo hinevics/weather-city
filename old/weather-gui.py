@@ -4,7 +4,8 @@ import random
 from math import ceil
 
 import streamlit as st
-import Weather
+
+import old.Weather as Weather
 
 DEFAULT_CITY_NAME = 'London'
 

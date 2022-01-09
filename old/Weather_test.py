@@ -3,11 +3,11 @@ import time
 
 # import pytest
 
-from config import DEFAULT_API_HISTORY, DEFAULT_API_FORECAST_MINUTE,\
+from old.config import DEFAULT_API_HISTORY, DEFAULT_API_FORECAST_MINUTE,\
     DEFAULT_API_FORECAST_HOURLY, DEFAULT_API_FORECAST_DAILY, DEFAULT_API_CURRENT, DEFAULT_API_KEY
 
-import WeatherWebAPI
-import Weather
+import old.WeatherWebAPI as WeatherWebAPI
+import old.Weather as Weather
 
 DEFAULT_CITU = r'Minsk'
 DEFAULT_LON_LAT = (53.9, 27.5667)
