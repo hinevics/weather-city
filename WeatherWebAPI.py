@@ -5,18 +5,14 @@
 # программа строит исторчиеские даныне виде графика изменения осадков
 # I am using api openweathermap.org
 import requests
-import json
+# import json
 import datetime
 import time
 
-from requests import api
+# from config import DEFAULT_API_KEY
 
-# DEFAULT_PATH_SAVE_FILE = r'../{name_doc}.{form}'
-# DEFAULT_CITY = r'London'
-# DEFAULT_API_WEATHER = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&units=metric&exclude={part}&appid={api_key}'
-# DEFAULT_API_CITY = r'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
-# DEFAULT_API_WEATHER_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&lang=ru&dt={time}&appid={api_key}'
-DEFAULT_API_KEY = r'8864601f4ae98b4994aa53941f6bc733'
+# from requests import api
+
 
 class City:
     """
@@ -24,6 +20,7 @@ class City:
     """
     DEFAULT_API_CITY_DIRECT = 'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&appid={api_key}'
     DEFAULT_API_CITY_REVERSE = 'http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={api_key}'
+
     def __init__(self, api_key=None, lat_lon=None, name=None) -> None:
         """
         ...description...
@@ -39,12 +36,12 @@ class City:
             lat_lon = city_inf['lat'], city_inf['lon']
             country = city_inf['country']
         self.api_key = api_key
-        self.lat_lon=lat_lon
+        self.lat_lon = lat_lon
         self.name = name
         self.country = country
 
     @classmethod
-    def direct_geocoding(cls, name:str,  api_key:str) -> dict:
+    def direct_geocoding(cls, name: str,  api_key: str) -> dict:
         """
         :return: :
         """
@@ -55,7 +52,7 @@ class City:
             print('STATUS CODE: {a1}'.format(a1=answer.status_code))
 
     @classmethod
-    def reverse_geocoding(cls, lat_lon:tuple,  api_key:str) -> dict:
+    def reverse_geocoding(cls, lat_lon: tuple,  api_key: str) -> dict:
         """
         :return: :
         """
@@ -69,14 +66,17 @@ class City:
 class DateTime:
     """
     This is a class for working with date and time when preparing api requests
-    It has a default parameter that is called from the class if the user does not pass the time when requesting historical data : DEFAULT_HISTORICAL_DATETIME
+    It has a default parameter that is called from the class if the
+    user does not pass the time when requesting historical data : DEFAULT_HISTORICAL_DATETIME
     """
     DEFAULT_TIMEDELTA = 4.9
-    DEFAULT_HISTORICAL_DATETIME = int(time.mktime((datetime.date.today() - datetime.timedelta(DEFAULT_TIMEDELTA)).timetuple()))
-    DEFAULT_TODAY_DATETIME = int(time.mktime(datetime.date.today().timetuple()))
-    
+    DEFAULT_HISTORICAL_DATETIME = int(
+        time.mktime((datetime.date.today() - datetime.timedelta(DEFAULT_TIMEDELTA)).timetuple()))
+    DEFAULT_TODAY_DATETIME = int(
+        time.mktime(datetime.date.today().timetuple()))
+
     @classmethod
-    def create_unix(cls, utctime:str):
+    def create_unix(cls, utctime: str):
         """
             The function converts utc date to unix
         """
@@ -92,27 +92,31 @@ class DateTime:
         return '{d}.{m}.{Y}'.format(d=utcdatetime.tm_mday, m=utcdatetime.tm_mon, Y=utcdatetime.tm_year)
 
     @classmethod
-    def create_time_unix_from_datetime(cls, datetime:datetime.datetime):
+    def create_time_unix_from_datetime(cls, datetime: datetime.datetime):
         """
             Creating unix time from datetime
         """
         return time.mktime(datetime.utcnow().timetuple())
-    
-    
+
+
 class Historical:
     """
     Historical weather data
-    
+
     Historical weather data for the previous 5 days
     """
-    DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&appid={api_key}'
+    DEFAULT_API_HISTORY = r'https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=\
+        {lat}&lon={lon}&dt={time}&appid={api_key}'
+
     @classmethod
-    def get_weather(cls, city:City, api_key:str, dt:int=DateTime.DEFAULT_HISTORICAL_DATETIME):
+    def get_weather(cls, city: City, api_key: str, dt: int = DateTime.DEFAULT_HISTORICAL_DATETIME):
         """
-            When this method is called, the City object and the int number corresponding to the time are passed to it 
+            When this method is called, the City object
+            and the int number corresponding to the time are passed to it
         """
         # Incoming weather data must be converted to the City class
-        str_request = Historical.DEFAULT_API_HISTORY.format(api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
+        str_request = Historical.DEFAULT_API_HISTORY.format(
+            api_key=api_key, lat=city.lat_lon[0], lon=city.lat_lon[1], time=dt)
         answer = requests.get(url=str_request)
         if answer.status_code == 200:
             return answer.json()
@@ -126,9 +130,11 @@ class Current:
     """
         ...description...
     """
-    DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,daily,alerts&units=metric&appid={api_key}'
+    DEFAULT_API_CURRENT = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon=\
+        {lon}&exclude=minutely,hourly,daily,alerts&units=metric&appid={api_key}'
+
     @classmethod
-    def get_weather(cls, city:City, api_key:str):
+    def get_weather(cls, city: City, api_key: str):
         """
             ...description...
         """
@@ -143,17 +149,20 @@ class Current:
                 print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
 
-
 class Forecast:
     """
-        Это нужно переделать. добавить возможность принимать параметр который поределяет какие именно нужны данные а не делать запросы с разных методов.
+        Это нужно переделать. добавить возможность принимать параметр
+        который поределяет какие именно нужны данные а не делать запросы с разных методов.
     """
-    DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,hourly,daily,alerts&units=metric&appid={api_key}'
-    DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,daily,alerts&units=metric&appid={api_key}'
-    DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=current,minutely,hourly,alerts&units=metric&appid={api_key}'
+    DEFAULT_API_FORECAST_MINUTE = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon=\
+        {lon}&exclude=current,hourly,daily,alerts&units=metric&appid={api_key}'
+    DEFAULT_API_FORECAST_HOURLY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon=\
+        {lon}&exclude=current,minutely,daily,alerts&units=metric&appid={api_key}'
+    DEFAULT_API_FORECAST_DAILY = r'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon=\
+        {lon}&exclude=current,minutely,hourly,alerts&units=metric&appid={api_key}'
 
     @classmethod
-    def get_minute_weather(cls, city:City, api_key:str):
+    def get_minute_weather(cls, city: City, api_key: str):
         """
             ...description...
         """
@@ -168,7 +177,7 @@ class Forecast:
                 print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
     @classmethod
-    def get_hourly_weather(cls, city:City, api_key:str):
+    def get_hourly_weather(cls, city: City, api_key: str):
         """
             ...description...
         """
@@ -183,7 +192,7 @@ class Forecast:
                 print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
 
     @classmethod
-    def get_daily_weather(cls, city:City, api_key:str):
+    def get_daily_weather(cls, city: City, api_key: str):
         """
             ...description...
         """
@@ -196,13 +205,16 @@ class Forecast:
             print(answer.status_code)
             for key in answer.headers.keys():
                 print('{a1}: {a2}'.format(a1=key, a2=answer.headers[key]))
-    
+
 
 def main():
     # dt = DateTime.create_unix('9.10.2021')
-    # a = Historical.get_weather_api(city=City(name='Minsk', api_key=DEFAULT_API_KEY), api_key=DEFAULT_API_KEY, dt=dt)['current']['dt']
+    # a = Historical.get_weather_api(city=City(name='Minsk',
+    # api_key=DEFAULT_API_KEY), api_key=DEFAULT_API_KEY, dt=dt)['current']['dt']
     # print(DateTime.create_utc(unixdatetime=a))
     print(DateTime.create_utc(DateTime.DEFAULT_TODAY_DATETIME))
     print(DateTime.create_utc(1633987116))
+
+
 if __name__ == '__main__':
     main()
