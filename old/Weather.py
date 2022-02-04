@@ -96,7 +96,7 @@ def get_historycal(city: str, api_key: str, dt: str):
 
 
 def main():
-    a = get_current(city='Minsk', api_key=r'8864601f4ae98b4994aa53941f6bc733')
+    # a = get_current(city='Minsk', api_key=r'8864601f4ae98b4994aa53941f6bc733')
     pass
 
 
