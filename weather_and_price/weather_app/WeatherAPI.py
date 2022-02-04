@@ -43,7 +43,7 @@ class Weather:
 
 def main():
     a = Weather.get_historical_weather_data(date2='2020-10-19')
-    print(type(a))
+    print(a)
 
 
 if __name__ == '__main__':
