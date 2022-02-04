@@ -29,9 +29,9 @@ def current(state: str, city: str, api_key: str):
             values=data_request['temp']['values'],
             units=data_request['temp']['units']),
         delta='{delta}{values} {units}'.format(
-                delta='-' if data_request['temp_feels_like']['values'] < data_request['temp']['values'] else '+',
-                values=data_request['temp_feels_like']['values'],
-                units=data_request['temp_feels_like']['units']))
+            delta='-' if data_request['temp_feels_like']['values'] < data_request['temp']['values'] else '+',
+            values=data_request['temp_feels_like']['values'],
+            units=data_request['temp_feels_like']['units']))
 
     cols[2].metric(
         label=data_request['pressure']['description'],
@@ -78,7 +78,8 @@ if api_key == '':
     # Добавить описание того что это за app'ка
     st.text('Enter api key')
 else:
-    input_city = st.sidebar.text_input(label='Write the city whose data you want to see:', value=DEFAULT_CITY_NAME)
+    input_city = st.sidebar.text_input(
+        label='Write the city whose data you want to see:', value=DEFAULT_CITY_NAME)
 
     st.title('Weather data')
     'You selected:', input_city

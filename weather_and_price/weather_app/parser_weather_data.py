@@ -4,7 +4,7 @@ from config import PATH_DATASET
 from WeatherAPI import Weather
 
 
-def parser_weather_data(data: dict): 
+def parser_weather_data(data: dict):
     res_data = {i: data['days'][0][i] for i in data['days'][0].keys()
                 if not (type(data['days'][0][i]) in (dict, list))}
     return pd.DataFrame(
