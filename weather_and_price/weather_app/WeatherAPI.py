@@ -5,6 +5,7 @@ from config import API_KEY
 # format date 2020-10-19
 # YYYY - MM - DD
 
+
 class Weather:
     DEFULT_API_FORM_REGUEST = \
         r'https://weather.visualcrossing.com/VisualCrossingWebServices'
