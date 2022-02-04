@@ -14,11 +14,11 @@ def parser_weather_data(data: dict):
 
 
 def main():
-    data = pd.read_csv(PATH_DATASET, encoding='utf-8', sep=';', usecols=[2])
-    get_weather_for_date = Weather.get_historical_weather_data(date2='2012-12-10')
-    # print(data.Date.map())
-    print(parser_weather_data(data))
-
+    data = pd.read_csv(PATH_DATASET, encoding='utf-8', sep=';', usecols=[0])
+    # get_weather_for_date = Weather.get_historical_weather_data(date2='2012-12-10')
+    # # print(data.Date.map())
+    # print(parser_weather_data(data))
+    print(data)
 
 if __name__ == "__main__":
     main()
