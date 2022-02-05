@@ -5,7 +5,7 @@ from math import ceil
 
 import streamlit as st
 
-import old.Weather as Weather
+import use_streamlit.Weather as Weather
 
 DEFAULT_CITY_NAME = 'London'
 
@@ -29,7 +29,9 @@ def current(state: str, city: str, api_key: str):
             values=data_request['temp']['values'],
             units=data_request['temp']['units']),
         delta='{delta}{values} {units}'.format(
-            delta='-' if data_request['temp_feels_like']['values'] < data_request['temp']['values'] else '+',
+            delta='-' if data_request[
+                'temp_feels_like'][
+                    'values'] < data_request['temp']['values'] else '+',
             values=data_request['temp_feels_like']['values'],
             units=data_request['temp_feels_like']['units']))
 
@@ -41,7 +43,8 @@ def current(state: str, city: str, api_key: str):
 
     # Убираю лишнее из результата
     k = [i for i in data_request.keys()
-         if (not (i in ['pressure', 'temp', 'weather']) and data_request[i] is not None)]
+         if (not (i in ['pressure', 'temp', 'weather'])
+             and data_request[i] is not None)]
     for i in range(ceil(len(k)/3)):
         keys = k[i*3:i*3+3]
         cols = st.columns(len(keys))
@@ -79,7 +82,8 @@ if api_key == '':
     st.text('Enter api key')
 else:
     input_city = st.sidebar.text_input(
-        label='Write the city whose data you want to see:', value=DEFAULT_CITY_NAME)
+        label='Write the city whose data you want to see:',
+        value=DEFAULT_CITY_NAME)
 
     st.title('Weather data')
     'You selected:', input_city
