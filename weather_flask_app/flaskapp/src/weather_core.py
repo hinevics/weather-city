@@ -37,7 +37,10 @@ def get_graph_weather_changes_day(city: str, sdata: str, edata: str):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=datetimes, y=max_temps,
                              mode='lines',
-                             name='lines'))
+                             name='max_temps'))
+    fig.add_trace(go.Scatter(x=datetimes, y=min_temps,
+                             mode='lines',
+                             name='min_temps'))
     # fig.add_trace(go.Scatter())
     # fig = px.line(df, x="date", y="lifeExp", color="continent",
     #               line_group="country", hover_name="country",
