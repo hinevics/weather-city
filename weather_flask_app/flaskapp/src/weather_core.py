@@ -1,13 +1,13 @@
-from src.getting_weather_data.weather_api import WeatherAPI
+from src.getting_weather_data.weather_api import DailyHistoricalWeatherAPI
 
 
 def get_graph_weather_changes_day():
-    graphJSON = WeatherAPI.get_weather_this_day()
+    graphJSON = DailyHistoricalWeatherAPI.get_weather_this_day_test()
     return graphJSON
 
 
 def main():
-    print(WeatherAPI)
+    pass
 
 
 if __name__ == "__main__":
