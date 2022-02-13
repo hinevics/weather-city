@@ -1,52 +1,41 @@
 from typing import List, Dict, Union
-import json
 import requests
 
 import pandas as pd
 import plotly
 import plotly.express as px
 
-from config import REQUEST_HISTORICAL_DAILY, API_KEY
+from src.getting_weather_data.config import REQUEST_HISTORICAL_DAILY, API_KEY
 
 
 class City:
-    """[summary]
-
+    """This class is for quickly determining lat and lon
     Returns:
         [type]: [description]
     """
     pass
 
 
-class DailyHistoricalWeatherAPI:
+class DailyHistorical:
     REQUEST_HISTORICAL_DAILY = REQUEST_HISTORICAL_DAILY
     API_KEY = API_KEY
 
     @classmethod
-    def get_weather_this_day_test(cls, city):
-        print(city)
-        df = pd.DataFrame({
-            'Fruit': ['Apples', 'Oranges', 'Bananas', 'Apples', 'Oranges',
-                      'Bananas'], 'Amount': [4, 1, 2, 2, 4, 5],
-            'City': ['SF', 'SF', 'SF', 'Montreal', 'Montreal', 'Montreal']})
-        fig = px.bar(df, x='Fruit', y='Amount', color='City',
-                     barmode='group')
-        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-        return graphJSON
-
-    @classmethod
-    def get_hisorical_daily(cls, city: str, sdata: str, e_data: str) -> Dict[str, Union[str, float]]:
-        """Weather on this day in the past years
-
+    def get_data(cls, city: str, sdata: str, edata: str) -> List[Dict[str, Union[str, float, int]]]:
+        """Weather on this day in the past years.
+        start_date=[YYYY-MM-DD] (REQUIRED)
+        end_date=[YYYY-MM-DD] (REQUIRED)
         Args:
             today ([type]): [description]
         """
-        aswer = requests.get(url=cls.REQUEST_HISTORICAL_DAILY)
-        print(aswer)
+        aswer = requests.get(url=cls.REQUEST_HISTORICAL_DAILY.format(
+            city=city, start_date=sdata, end_date=edata, api_key=cls.API_KEY))
+        result = aswer.json()['data']
+        return result
 
 
 def main():
-    DailyHistoricalWeatherAPI.get_hisorical_daily()
+    DailyHistorical.get_data(city='London, UK', sdata='2022-02-01', edata='2022-02-13')
 
 
 if __name__ == "__main__":
