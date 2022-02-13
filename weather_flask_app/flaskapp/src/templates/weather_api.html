@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Greetings</title>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-    </head>
+<!doctype html>
+<html>
     <body>
-        <h1>START PAGE</h1>
-        <a href="{{ url_for('start') }}">back</a>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="chart" id="bargraph">
-                    <script>
-                        var graphs = {{plot | safe}};
-                        Plotly.plot('bargraph',graphs,{});
-                    </script>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
+        <h1>Hello Plotly (but not Dash)</h1>
+        <a href="{{ url_for('start') }}"><-back</a>
+        <div id='chart' class='chart'”></div>
+    </body><script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <script type='text/javascript'>
+        var graphs = {{graphJSON | safe}};
+        Plotly.plot('chart',graphs,{});
+</script></html>
 </html>
