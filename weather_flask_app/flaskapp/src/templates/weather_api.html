@@ -1,8 +1,10 @@
 <!doctype html>
 <html>
+    <head>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mysite.css') }}"></head>
     <body>
         <h1>This is a page for plotting weather</h1>
-        <a href="{{ url_for('start') }}"><-back</a>
+        <a href="{{ url_for('start') }}" class="button3"><-back</a>
         <form method="post">
             <label for="title">Title</label>
             <br>
