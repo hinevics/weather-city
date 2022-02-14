@@ -77,7 +77,7 @@ def get_graph_weather_changes_city(city: str, sdata: str, edata: str) -> str:
 
 
 def main():
-    get_graph_weather_changes_day(city='London, UK', sdata='2022-02-01', edata='2022-02-13')
+    get_graph_weather_changes_city(city='London, UK', sdata='2022-02-01', edata='2022-02-13')
 
 
 if __name__ == "__main__":

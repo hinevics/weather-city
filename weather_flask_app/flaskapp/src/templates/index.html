@@ -3,11 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>Greetings</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='styles/mysite.css') }}"></head>
     </head>
     <body>
         <h1>START PAGE</h1>
-        <a href="{{ url_for('render_api') }}">api</a>
-        <a href="{{ url_for('render_parser') }}">parser</a>
-        <a href="{{ url_for('render_database') }}">database</a>
+        <a href="{{ url_for('render_api') }}" class="button3">api</a>
+        <a href="{{ url_for('render_parser') }}" class="button3">parser</a>
+        <a href="{{ url_for('render_database') }}" class="button3">database</a>
     </body>
 </html>
