@@ -1,10 +1,14 @@
 import json
 
+import plotly
+import plotly.graph_objects as go
+# import plotly.express as px
+from plotly.subplots import make_subplots
+
 from src.getting_weather_data.weather_api import DailyHistorical
-import graph_generator as gg
 
 
-def get_graph_weather_changes_day(city: str, sdata: str, edata: str) -> str:
+def get_graph_weather_changes_city(city: str, sdata: str, edata: str) -> str:
     """Changes in snow thickness and changes in maximum / minimum temperature
 
     Args:
@@ -26,9 +30,49 @@ def get_graph_weather_changes_day(city: str, sdata: str, edata: str) -> str:
         max_temps.append(obj['max_temp'])
         min_temps.append(obj['min_temp'])
         snows.append(obj['snow'])
-    fig = gg.multiple_axes(x=datetimes, y1=[max_temps, min_temps], y2=snows)
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # max_temps
+    fig.add_trace(
+        go.Scatter(x=datetimes, y=max_temps, name="max_temp"),
+        secondary_y=False,)
+    # min_temps
+    fig.add_trace(
+        go.Scatter(x=datetimes, y=min_temps, name="min_temp"),
+        secondary_y=False,)
+    # snows
+    fig.add_trace(
+        go.Scatter(x=datetimes, y=snows, name="snow"),
+        secondary_y=True,)
+
+    # Add figure title
+    fig.update_layout(
+        title_text="Changes in snow thickness and changes in max/min temperature")
+
+    # Set x-axis title
+    fig.update_xaxes(title_text="date")
+
+    # Set y-axes titles
+    fig.update_yaxes(title_text="<b>Temperature</b>, Celcius", secondary_y=False)
+    fig.update_yaxes(title_text="<b>Accumulated snowfall</b>, mm", secondary_y=True)
+    
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     print('--Ok--')
+    
+    # fig = go.Figure()
+    # fig.add_trace(go.Scatter(x=datetimes, y=max_temps,
+    #                          mode='lines',
+    #                          name='max_temps'))
+    # fig.add_trace(go.Scatter(x=datetimes, y=min_temps,
+    #                          mode='lines',
+    #                          name='min_temps'))
+    # fig.add_trace(go.Scatter(x=datetimes, y=snows,
+    #                          mode='lines',
+    #                          name='snows'))
+    # fig.add_trace(go.Scatter())
+    # fig = px.line(df, x="date", y="lifeExp", color="continent",
+    #               line_group="country", hover_name="country",
+    #               line_shape="spline", render_mode="svg")
     return graphJSON
 
 

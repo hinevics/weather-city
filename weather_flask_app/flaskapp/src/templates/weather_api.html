@@ -1,8 +1,17 @@
 <!doctype html>
 <html>
     <body>
-        <h1>Hello Plotly (but not Dash)</h1>
+        <h1>This is a page for plotting weather</h1>
         <a href="{{ url_for('start') }}"><-back</a>
+        <form method="post">
+            <label for="title">Title</label>
+            <br>
+                <input type="text" name="city" placeholder="City, CS" value="{{ request.form['city'] }}"></input>
+                <input type="text" name="start_date" placeholder="Start Date" value="{{ request.form['start_date'] }}"></input>
+                <input type="text" name="end_date" placeholder="End Date" value="{{ request.form['end_date'] }}"></input>
+                <button type="submit">Submit</button>
+            <br>
+        </form>
         <div id='chart' class='chart'”></div>
     </body><script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
     <script type='text/javascript'>
