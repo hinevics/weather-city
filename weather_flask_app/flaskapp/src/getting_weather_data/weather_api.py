@@ -1,3 +1,5 @@
+import time
+import datetime
 from typing import List, Dict, Union
 import requests
 
@@ -7,6 +9,7 @@ import plotly.express as px
 
 from src.getting_weather_data.config import REQUEST_HISTORICAL_DAILY, API_KEY
 
+# class Date    
 
 class City:
     """This class is for quickly determining lat and lon
@@ -32,6 +35,7 @@ class DailyHistorical:
             city=city, start_date=sdata, end_date=edata, api_key=cls.API_KEY))
         result = aswer.json()['data']
         return result
+
 
 
 def main():
