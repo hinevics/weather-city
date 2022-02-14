@@ -11,7 +11,7 @@ def start():
 
 @server.route('/weather_api', methods=['GET'])
 def render_api():
-    graphJSON = get_graph_weather_changes_day(city='London, UK', sdata='2022-02-01', edata='2022-02-13')
+    graphJSON = get_graph_weather_changes_day(city='Minsk, BY', sdata='2022-02-01', edata='2022-02-13')
     return render_template('weather_api.html', graphJSON=graphJSON)
 
 

@@ -1,16 +1,11 @@
 import json
 
-import pandas as pd
-import plotly
-import plotly.express as px
-import plotly.graph_objects as go
-
 from src.getting_weather_data.weather_api import DailyHistorical
+import graph_generator as gg
 
 
-def get_graph_weather_changes_day(city: str, sdata: str, edata: str):
-    """The function collects a JSON object for
-    plotting temperature and precipitation changes
+def get_graph_weather_changes_day(city: str, sdata: str, edata: str) -> str:
+    """Changes in snow thickness and changes in maximum / minimum temperature
 
     Args:
         city (str): _description_
@@ -18,33 +13,20 @@ def get_graph_weather_changes_day(city: str, sdata: str, edata: str):
         edata (str): _description_
 
     Returns:
-        _type_: _description_
+        str: _description_
     """
     datetimes = []
     max_temps = []
     min_temps = []
+    snows = []
     data = DailyHistorical.get_data(city=city, sdata=sdata, edata=edata)
     data = sorted(data, key=lambda x: x['datetime'])
     for obj in data:
         datetimes.append(obj['datetime'])
         max_temps.append(obj['max_temp'])
         min_temps.append(obj['min_temp'])
-    # return graphJSON
-    # df = pd.DataFrame({
-    #     'date': datetimes,
-    #     'max_temp': max_temps,
-    #     'min_temp': min_temps})
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=datetimes, y=max_temps,
-                             mode='lines',
-                             name='max_temps'))
-    fig.add_trace(go.Scatter(x=datetimes, y=min_temps,
-                             mode='lines',
-                             name='min_temps'))
-    # fig.add_trace(go.Scatter())
-    # fig = px.line(df, x="date", y="lifeExp", color="continent",
-    #               line_group="country", hover_name="country",
-    #               line_shape="spline", render_mode="svg")
+        snows.append(obj['snow'])
+    fig = gg.multiple_axes(x=datetimes, y1=[max_temps, min_temps], y2=snows)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     print('--Ok--')
     return graphJSON
